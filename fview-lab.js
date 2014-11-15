@@ -54,7 +54,7 @@ if (Meteor.isClient) {
 
 //    if (errors == 0)
 //      Session.set('x', Date.now());
-  }, 100);
+  }, 0);
 
   Template.aces.rendered = function() {
     tplEditor = new ReactiveAce();
