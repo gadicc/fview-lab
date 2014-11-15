@@ -6,11 +6,12 @@
 meteor-platform
 autopublish
 insecure
-mjn:famous
-gadicohen:famous-views
-mquandalle:jade
 iron:router
-#mandrill:ace
+raix:famono
+gadicohen:famous-views
+meteorhacks:inject-initial
+mquandalle:jade
+reactive-var
 dcsan:reactive-ace
 spacebars-compiler
-reactive-var
+force-ssl

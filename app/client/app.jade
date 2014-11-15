@@ -1,11 +1,19 @@
 head
-  title fview-lab
+  meta(name='viewport', content='width=device-width, maximum-scale=1, user-scalable=no')
 
-template(name="layout")
-  +FlexibleLayout ratios="[0.3,0.4,0.3]"
-    +yield "guide"
-    +yield "code"
-    +yield "result"
+template(name='layout')
+  +HeaderFooterLayout headerSize="50" footerSize="0"
+    +Modifier target="header"
+      +header
+    +FlexibleLayout target="content" ratios="[0.3,0.4,0.3]"
+      +yield "guide"
+      +yield "code"
+      +yield "result"
+
+template(name="header")
+  +Surface
+    div#header
+      | Hi
 
 template(name="t1_guide")
   +Surface
@@ -16,13 +24,15 @@ template(name="code")
     +aces
 
 template(name="result")
-  +ContainerSurface overflow="hidden"
-    +result
+  +Surface(template="iframe")
+
+template(name="iframe")
+  iframe#iframe(sandbox="allow-scripts allow-same-origin")
 
 template(name="aces")
   div(id="tplEditor",style="height:50%")
     | &lt;template name="famousInit">
-    |   {{dstache}}>StateModifier template="main" origin="[0.5,0.5]" align="[0.5,0.5]"}}
+    |   {{dstache}}>StateModifier template="main" origin="[0.5,0.5]" align="[0.5,0.5]" proportions="[0.8,0.8]"}}
     | &lt;/template>
     | &lt;template name="main">
     |   {{dstache}}>Surface template="mySurface" style="background: green;"}}
