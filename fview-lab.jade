@@ -22,15 +22,34 @@ template(name="result")
 template(name="aces")
   div(id="tplEditor",style="height:50%")
     | &lt;template name="famousInit">
-    |   {{dstache}}#StateModifier rotateZ="20"}}
-    |     {{dstache}}#Surface style="background: green"}}
-    |       {{dstache}}>surfaceContents}}
-    |     {{dstache}}/Surface}}
-    |   {{dstache}}/StateModifier}}
+    |   {{dstache}}>StateModifier template="main" origin="[0.5,0.5]" align="[0.5,0.5]"}}
     | &lt;/template>
-    | &lt;template name="surfaceContents">
+    | &lt;template name="main">
+    |   {{dstache}}>Surface template="mySurface" style="background: green;"}}
+    | &lt;/template>
+    | &lt;template name="mySurface">
+    |   Hi, {{dstache}}name}}.&lt;br>
     |   Obviously typing here just refreshes
     |   the surface content and doesn't recreate
     |   the render tree from scratch.  Duh :)
+    |   Try it out.  Animations will continue;
+    |   Same for helpers: {{dstache}}name}} {{dstache}}name}} {{dstache}}name}}
+    |   &lt;br>
+    |   To restart the animation, modify the "main" template content
+    |   or the Template.main javascript
     | &lt;/template>
   div(id="codeEditor",style="height:50%")
+    | Template.mySurface.helpers({
+    |   // You can change this too, the animation continues
+    |   name: function() { return 'Gadi'; }
+    | });
+    | Template.main.rendered = function() {
+    |   var fview = FView.from(this);
+    |     fview.modifier.setTransform(famous.core.Transform.rotateZ(200));
+    |     fview.modifier.setTransform(famous.core.Transform.rotateZ(-200),
+    |       { duration : 5000, curve: 'easeInOut' });
+    |     fview.modifier.setTransform(famous.core.Transform.rotateZ(200),
+    |       { duration : 5000, curve: 'easeInOut' });
+    |     fview.modifier.setTransform(famous.core.Transform.rotateZ(0),
+    |       { duration : 5000, curve: 'easeInOut' });
+    | };
