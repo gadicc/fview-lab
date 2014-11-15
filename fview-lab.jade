@@ -1,0 +1,36 @@
+head
+  title fview-lab
+
+template(name="layout")
+  +FlexibleLayout ratios="[0.3,0.4,0.3]"
+    +yield "guide"
+    +yield "code"
+    +yield "result"
+
+template(name="t1_guide")
+  +Surface
+    p hello
+
+template(name="code")
+  +Surface
+    +aces
+
+template(name="result")
+  +ContainerSurface overflow="hidden"
+    +result
+
+template(name="aces")
+  div(id="tplEditor",style="height:50%")
+    | &lt;template name="famousInit">
+    |   {{dstache}}#StateModifier rotateZ="20"}}
+    |     {{dstache}}#Surface style="background: green"}}
+    |       {{dstache}}>surfaceContents}}
+    |     {{dstache}}/Surface}}
+    |   {{dstache}}/StateModifier}}
+    | &lt;/template>
+    | &lt;template name="surfaceContents">
+    |   Obviously typing here just refreshes
+    |   the surface content and doesn't recreate
+    |   the render tree from scratch.  Duh :)
+    | &lt;/template>
+  div(id="codeEditor",style="height:50%")
