@@ -15,12 +15,30 @@ function receiveMessage(event) {
     receiveHandlers[data.type](data.data || data);
 }
 
-templates = {};
 var readies = new ReactiveDict();
-
 var receiveHandlers = {};
 
+templates = {};
+templatesQueue = [];
+templatesAutorun = null;
 receiveHandlers.template = function(data) {
+  // New templates arriving before we finish flushing, queue them
+  if (!readies.get('FVLbody')) {
+    templatesQueue.push(data);
+    if (!templatesAutorun) {
+      templatesAutorun = Tracker.autorun(function() {
+        if (readies.get('FVLbody')) {
+          for (var i=0; i < templatesQueue.length; i++)
+            receiveHandlers.template(templatesQueue[i]);
+          templatesQueue = [];
+          templatesAutorun.stop();
+          templatesAutorun = false;
+        }
+      });
+    }
+    return;
+  }
+
   var name = data.name;
   var tpl = templates[name];
 
@@ -68,11 +86,33 @@ receiveHandlers.javascript = function(data) {
       console.log(error);
     }
   } else {
-    console.log('queu');
-    lastCode = code;
+    lastCode = data;
+    var tracker = Tracker.autorun(function() {
+      if (readies.get('famousInit') && lastCode) {
+        try {
+          eval(lastCode);
+        } catch (error) {
+          console.log(error);
+        }
+        lastCode = null;
+        tracker.stop();
+      }
+    });
   }
-}
+};
 
+receiveHandlers.clear = function() {
+  readies.set('FVLbody', false);
+  readies.set('famousInit', false);
+  readies.set('code', false);
+  for (var name in templates) {
+    delete Template[name];
+    delete templates[name];
+  }
+  Tracker.afterFlush(function() {
+    readies.set('FVLbody', true);
+  });
+};
 
 if (window.addEventListener)
   window.addEventListener('message', receiveMessage, false);
@@ -105,7 +145,7 @@ Template.__FVL.helpers({
   }
 });
 
+Logger.setLevel('famous-views', 'trace');
 FView.ready(function() {
   Blaze.render(Template.__FVL, document.body);
-  readies.set('FVLbody', true);
 });

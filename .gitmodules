@@ -1,0 +1,3 @@
+[submodule "app/packages/gadicohen:accounts-merge"]
+	path = app/packages/gadicohen:accounts-merge
+	url = https://github.com/gadicc/meteor-accounts-merge.git

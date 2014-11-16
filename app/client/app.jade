@@ -3,21 +3,38 @@ head
 
 template(name='layout')
   +HeaderFooterLayout headerSize="50" footerSize="0"
-    +Modifier target="header"
+    +Modifier target="header" translate="[0,0,1000]"
       +header
     +FlexibleLayout target="content" ratios="[0.3,0.4,0.3]"
-      +yield "guide"
+      +Surface
+        +yield "guide"
       +yield "code"
       +yield "result"
 
 template(name="header")
   +Surface
     div#header
-      | Hi
+      div
+        +loginButtons align="right"
+      div
+        | #{title}
 
-template(name="t1_guide")
-  +Surface
-    p hello
+template(name="guide")
+  p
+  | hello
+  p
+    if prevPage
+      button.btn(data-target='prev')
+        i.fa.fa-chevron-left
+        | &nbsp; (#{prevPage}) Back
+    if nextPage
+      button.btn(data-target='next')
+        | Next (#{nextPage}) &nbsp;
+        i.fa.fa-chevron-right
+    else if isOwner
+      button.btn(data-target='createNext')
+        | Create Next &nbsp;
+        i.fa.fa-chevron-right
 
 template(name="code")
   +Surface
@@ -31,35 +48,4 @@ template(name="iframe")
 
 template(name="aces")
   div(id="tplEditor",style="height:50%")
-    | &lt;template name="famousInit">
-    |   {{dstache}}>StateModifier template="main" origin="[0.5,0.5]" align="[0.5,0.5]" proportions="[0.8,0.8]"}}
-    | &lt;/template>
-    | &lt;template name="main">
-    |   {{dstache}}>Surface template="mySurface" style="background: green;"}}
-    | &lt;/template>
-    | &lt;template name="mySurface">
-    |   Hi, {{dstache}}name}}.&lt;br>
-    |   Obviously typing here just refreshes
-    |   the surface content and doesn't recreate
-    |   the render tree from scratch.  Duh :)
-    |   Try it out.  Animations will continue;
-    |   Same for helpers: {{dstache}}name}} {{dstache}}name}} {{dstache}}name}}
-    |   &lt;br>
-    |   To restart the animation, modify the "main" template content
-    |   or the Template.main javascript
-    | &lt;/template>
   div(id="codeEditor",style="height:50%")
-    | Template.mySurface.helpers({
-    |   // You can change this too, the animation continues
-    |   name: function() { return 'Gadi'; }
-    | });
-    | Template.main.rendered = function() {
-    |   var fview = FView.from(this);
-    |     fview.modifier.setTransform(famous.core.Transform.rotateZ(200));
-    |     fview.modifier.setTransform(famous.core.Transform.rotateZ(-200),
-    |       { duration : 5000, curve: 'easeInOut' });
-    |     fview.modifier.setTransform(famous.core.Transform.rotateZ(200),
-    |       { duration : 5000, curve: 'easeInOut' });
-    |     fview.modifier.setTransform(famous.core.Transform.rotateZ(0),
-    |       { duration : 5000, curve: 'easeInOut' });
-    | };

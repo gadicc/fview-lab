@@ -2,8 +2,17 @@
 
 #header {
 	background: black;
-	height: 100%;
+	padding: 0 20px 0 20px;
+	color: white;
 }
+
+#header, #header>div {
+	height: 100%;
+	line-height: 50px;
+}
+
+#header > div:first-child { float: right; }
+#header > div:last-child { font-size: 18px; }
 
 #iframe {
 	width: 100%;
@@ -11,4 +20,9 @@
 	border: 0;
 	margin: 0;
 	padding: 0;
+}
+
+body {
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 14px;
 }
