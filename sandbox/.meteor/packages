@@ -10,3 +10,8 @@ mquandalle:jade
 reactive-var
 reactive-dict
 meteorhacks:inject-initial
+
+gadicohen:fview-lagometer
+
+# Enable before deploy
+#appcache

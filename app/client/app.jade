@@ -4,20 +4,27 @@ head
 template(name='layout')
   +HeaderFooterLayout headerSize="50" footerSize="0"
     +Modifier target="header" translate="[0,0,1000]"
-      +header
-    +FlexibleLayout target="content" ratios="[0.3,0.4,0.3]"
+      +Surface template="header"
+    +FlexibleLayout target="content" ratios="[0.25,0.45,0.3]"
       +Surface
         +yield "guide"
       +yield "code"
       +yield "result"
 
 template(name="header")
-  +Surface
-    div#header
-      div
-        +loginButtons align="right"
-      div
-        | #{title}
+  div#header
+    div
+      +loginButtons align="right"
+    div
+      span.title #{title}
+      | &nbsp;&nbsp;
+      if isOwner
+        if isDirty
+          button.btn.btn-success(data-action="save") Save (Ctrl-S)
+        else
+          button.btn ּSaved
+      unless currentUser
+        | not logged in
 
 template(name="guide")
   p
@@ -47,5 +54,12 @@ template(name="iframe")
   iframe#iframe(sandbox="allow-scripts allow-same-origin")
 
 template(name="aces")
-  div(id="tplEditor",style="height:50%")
-  div(id="codeEditor",style="height:50%")
+  div#editorPane
+    div.header
+      span Spacebars
+      | Templating
+    div#tplEditor.editor
+    div.header
+      span JavaScript
+      | Code
+    div#codeEditor.editor

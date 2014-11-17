@@ -1,25 +1,26 @@
 Pads = new Mongo.Collection('pads');
 Pages = new Mongo.Collection('pages');
 
-Pads.allow({
-	update: function(userId, currentDoc) {
-		if (currentDoc.owners.indexOf(userId) === -1)
-			return false;
+// Takes a padId, a pad, or a page
+userOwnsPad = function(userId, pad) {
+	if (typeof pad === 'object') {
+		if (pad.padId && !pad.owners)
+		  pad = Pads.findOne(pad.padId);
+	} else
+			pad = Pads.findOne(pad);
+	return !!pad && pad.owners.indexOf(userId) !== -1;
+}
 
-		// TODO, only allow templates/code/title/pages/owners, not views,etc.
-		return true;
-	}
+// TODO, disallow user to touch view stats, etc
+
+Pads.allow({
+	insert: userOwnsPad,
+	update: userOwnsPad
 });
 
 Pages.allow({
-	insert: function(userId, doc) {
-		if (!doc.padId)
-			return false;
-		var pad = Pads.findOne(doc.padId);
-		if (!pad)
-			return false;
-		return pad.owners.indexOf(userId) !== -1;
-	}
+	insert: userOwnsPad,
+	update: userOwnsPad
 });
 
 if (Meteor.isServer) {
@@ -29,7 +30,10 @@ if (Meteor.isServer) {
 	Meteor.publish('page', function(padId, pageNo) {
 		check(padId, String);
 		check(pageNo, Number);
-		return Pages.find({ padId: padId, pageNo: pageNo }, { limit: 1 });
+		return Pages.find({
+			padId: padId,
+			$or: [ { pageNo: pageNo }, { pageNo: pageNo + 1 } ]
+		}, { limit: 2 });
 	});
 
 	// Populate initial data
@@ -45,7 +49,7 @@ if (Meteor.isServer) {
 		});
 
 		Pages.insert({
-			padId: pageId,
+			padId: padId,
 			pageNo: 1,
 			templates: {
 				spacebars:

@@ -1,3 +1,8 @@
+subs = new SubsManager({
+	cacheLimit: 10,
+	expireIn: 30
+});
+
 Router.configure({
 	layoutTemplate: 'layout'
 });
@@ -19,11 +24,12 @@ Router.route('/pads/:_id', function() {
 
 Router.route('/pads/:_id/:pageNo', {
 	name: 'pads',
-	onBeforeAction: function () {
-		this.subscribe('pad', this.params._id);
-		this.subscribe('page', this.params._id,
-			this.params.pageNo ? parseInt(this.params.pageNo) : 1);
-		this.next();
+	waitOn: function () {
+		return [
+			subs.subscribe('pad', this.params._id),
+			subs.subscribe('page', this.params._id,
+				this.params.pageNo ? parseInt(this.params.pageNo) : 1)
+		];
 	},
 	data: function() {
 		var pad = Pads.findOne(this.params._id);
@@ -39,6 +45,7 @@ Router.route('/pads/:_id/:pageNo', {
 		Session.set('title', title)
 		window.title = title + ' - fview-lab';
 
+		Session.set('isDirty', false);
 		return {
 			pad: pad,
 			page: Pages.findOne({ padId:pad._id, pageNo:pageNo })

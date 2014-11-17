@@ -13,7 +13,7 @@ Template.guide.helpers({
 
 Template.guide.events({
 	'click button': function(event, tpl) {
-		var target = event.target.getAttribute('data-target');
+		var target = event.currentTarget.getAttribute('data-target');
 
 		switch(target) {
 			case 'createNext':

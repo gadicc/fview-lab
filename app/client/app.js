@@ -45,5 +45,31 @@ function receiveMessage(event) {
 }
 
 Template.header.helpers({
-  title: function() { return Session.get('title'); }
+  title: function() { return Session.get('title'); },
+  isDirty: function() { return Session.get('isDirty'); }
 });
+
+Template.header.events({
+  'click button[data-action="save"]': function(event, tpl) {
+    save();
+  }
+});
+
+$(window).bind('keydown', function(event) {
+  if (event.ctrlKey || event.metaKey) {
+    switch (String.fromCharCode(event.which).toLowerCase()) {
+      case 's':
+        event.preventDefault();
+        save();
+    }
+  }
+});
+
+save = function() {
+  var data = Router.current().data();
+  Pages.update(data.page._id, { $set: {
+    'templates.spacebars': tplEditor._editor.getValue(),
+    'code.javascript': codeEditor._editor.getValue()
+  }});
+  Session.set('isDirty', false);
+}

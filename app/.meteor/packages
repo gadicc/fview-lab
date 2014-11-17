@@ -1,28 +1,34 @@
-# Meteor packages used by this project, one per line.
-#
-# 'meteor add' and 'meteor remove' will edit this file for you,
-# but you can also edit it by hand.
+# Enable before deploy
+#appcache
 
 meteor-platform
 #autopublish
 #insecure
-iron:router
-#raix:famono
-mjn:famous
-gadicohen:famous-views
-meteorhacks:inject-initial
-mquandalle:jade
+
 reactive-var
-dcsan:reactive-ace
 spacebars-compiler
 force-ssl
+
 accounts-ui
 accounts-password
 accounts-github
 accounts-twitter
 accounts-google
+gadicohen:accounts-merge
+
+#raix:famono
+mjn:famous
+gadicohen:famous-views
+
+iron:router
+npm-container
+mquandalle:jade
+dcsan:reactive-ace
+meteorhacks:subs-manager
+#meteorhacks:fast-render
+meteorhacks:inject-initial
+
 mizzao:bootstrap-3
 #useraccounts:bootstrap
-gadicohen:accounts-merge
-npm-container
 chrismbeckett:fontawesome4
+

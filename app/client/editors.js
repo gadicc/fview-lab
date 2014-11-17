@@ -14,10 +14,18 @@ Template.aces.rendered = function() {
   tplEditor._editor.getSession().on('change', updateTemplates);
   codeEditor._editor.getSession().on('change', updateCode);
 
+  _.each([codeEditor._editor, tplEditor._editor], function(editor) {
+    editor.setOptions({
+      maxLines: Infinity,
+    });
+    var session = editor.getSession();
+    session.setUseWrapMode(true);
+  });
+
   if (editorQueue.tpl)
-    tplEditor._editor.setValue(editorQueue.tpl);
+    updateEditor('tpl', editorQueue.tpl)
   if (editorQueue.code)
-    codeEditor._editor.setValue(editorQueue.code);
+    updateEditor('code', editorQueue.code)
 };
 
 /*
@@ -30,8 +38,8 @@ updateEditor = function(which, content) {
   var editor = window[which + 'Editor'];
   if (editor) {
     useThisValue = content;
-    editor._editor.setValue(content);
-    ignoreUpdate = false;
+    editor._editor.setValue(content, -1);
+    useThisValue = false;
   }
   else
     editorQueue[which] = content;
@@ -42,10 +50,13 @@ updateEditor = function(which, content) {
  * Go through each template and see what's changed, post to sandbox
  */
 templates = {};
-var updateTemplates = function(event, force) {
+var updateTemplates = function(event) {
   // Weird ace bug?  getValue() returns old value, let's only use for user update
   var value = useThisValue === false ? tplEditor._editor.getValue() : useThisValue;
   var errors = 0;
+
+  if (!useThisValue && !Session.get('isDirty'))
+    Session.set('isDirty', true);
 
   var match, re = /<template name="(.*?)">([\s\S]*?)<\/template>/g;
   while ((match = re.exec(value)) !== null) {
@@ -75,10 +86,13 @@ var updateTemplates = function(event, force) {
  * and post affectedTemplates to sandbox
  */
 codes = {};
-var updateCode = function(event, force) {
+var updateCode = function(event) {
   // Weird ace bug?  getValue() returns old value, let's only use for user update
   var content = useThisValue === false ? codeEditor._editor.getValue() : useThisValue;
   var parsed;
+
+  if (!useThisValue && !Session.get('isDirty'))
+    Session.set('isDirty', true);
 
   try {
     parsed = esprima.parse(content);
@@ -121,11 +135,12 @@ var updateCode = function(event, force) {
 
     if (checkit) {
       var code = codes[checkit.tplName];
+      var what = checkit.method || checkit.property;
       if (!code)
         code = codes[checkit.tplName] = {};
 
-      if (!code.serialized || code.serialized !== checkit.serialized) {
-        code.serialized = checkit.serialized;
+      if (!code[what] || code[what] !== checkit.serialized) {
+        code[what] = checkit.serialized;
         if (affectedTemplates.indexOf(checkit.tplName) === -1)
           affectedTemplates.push(checkit.tplName);
       }
@@ -133,6 +148,6 @@ var updateCode = function(event, force) {
 
   }); /* _.each(parsed.body) */
 
-  post({ type:'javascript', data:content });
-  post({ type:'affectedTemplates', data:affectedTemplates });
+  post({ type: 'javascript', data: content });
+  post({ type: 'affectedTemplates', data: affectedTemplates });
 };
