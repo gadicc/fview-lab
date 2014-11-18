@@ -19,7 +19,7 @@ template(name="header")
     div
       span.title
         +xedit value=pad.title
-          a(data-padid="{{pad._id}}") {{pad.title}}
+          a.title(data-padid="{{pad._id}}") {{pad.title}}
         | #{pageHint}
       | &nbsp;&nbsp;
       if isOwner
