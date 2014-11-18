@@ -1,5 +1,5 @@
 Template.registerHelper('isOwner', function() {
-  return this.pad && this.pad.owners.indexOf(Meteor.userId()) !== -1;
+  return this.pad && this.pad.owners.indexOf(Meteor.userId()) !== -1 ? 'isOwner' : false;
 });
 
 Template.guide.helpers({
@@ -27,11 +27,11 @@ Template.guide.events({
 			Pads.update(tpl.data.pad._id, { $inc: { pages: 1 }} );
 
 			case 'next':
-			Router.go('pads', { _id: tpl.data.pad._id, pageNo: tpl.data.page.pageNo+1 });
+			Router.go('padPage', { _id: tpl.data.pad._id, pageNo: tpl.data.page.pageNo+1 });
 			break;
 
 			case 'prev':
-			Router.go('pads', { _id: tpl.data.pad._id, pageNo: tpl.data.page.pageNo-1 });
+			Router.go('padPage', { _id: tpl.data.pad._id, pageNo: tpl.data.page.pageNo-1 });
 			break;
 		}
 	}

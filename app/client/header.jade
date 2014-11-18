@@ -1,0 +1,30 @@
+template(name="header")
+  div#header
+    div#headerRight
+      ul.nav.navbar-nav
+        li.dropdown
+          a.dropdown-toggle(data-toggle="dropdown",role="button",aria-expanded="false")
+            | My Pads
+            span.caret
+          ul.dropdown-menu(role="menu")
+            li
+              a.pads(data-action="new") Create New
+            each userPads
+              li
+                a.pads(href="{{pathFor route='padHome' data=this}}") {{title}}
+
+      | &nbsp;
+      +loginButtons align="right"
+    div
+      span.title
+        +xedit value=pad.title
+          a(data-padid="{{pad._id}}") {{pad.title}}
+        | #{pageHint}
+      | &nbsp;&nbsp;
+      if isOwner
+        if isDirty
+          button.btn.btn-success(data-action="save") Save (Ctrl-S)
+        else
+          button.btn ּSaved
+      unless currentUser
+        | not logged in

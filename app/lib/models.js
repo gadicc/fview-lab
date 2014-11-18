@@ -24,6 +24,10 @@ Pages.allow({
 });
 
 if (Meteor.isServer) {
+	Meteor.publish('mypads', function(limit) {
+		check(limit, Number);
+		return Pads.find({owners: this.userId}, {limit:limit});
+	});
 	Meteor.publish('pad', function(id) {
 		return Pads.find(id, { limit: 1 });
 	});

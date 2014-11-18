@@ -11,8 +11,22 @@
 	line-height: 50px;
 }
 
-#header > div:first-child { float: right; }
-#header span.title { font-size: 18px; }
+#headerRight { float: right; }
+#headerRight > div { display: inline-block; }
+
+#header .title { font-size: 18px; color: white; }
+#header .title a { color: white; }
+
+#header .nav > li > a:hover, .nav > li > a:focus {
+  /* override bootstap */
+  /*
+	background-color: inherit;
+	text-decoration: underline;
+	/* custom */
+	/*
+	color: #aaa;
+	*/
+}
 
 #iframe {
 	width: 100%;

@@ -44,32 +44,19 @@ function receiveMessage(event) {
   console.log(data);
 }
 
-Template.header.helpers({
-  title: function() { return Session.get('title'); },
-  isDirty: function() { return Session.get('isDirty'); }
-});
+Meteor.subscribe('mypads', 5);
 
-Template.header.events({
-  'click button[data-action="save"]': function(event, tpl) {
-    save();
-  }
-});
-
-$(window).bind('keydown', function(event) {
-  if (event.ctrlKey || event.metaKey) {
-    switch (String.fromCharCode(event.which).toLowerCase()) {
-      case 's':
-        event.preventDefault();
-        save();
+// http://stackoverflow.com/questions/22867690/how-do-i-use-x-editable-on-dynamic-fields-in-a-meteor-template-now-with-blaze#23095399
+Template.xedit.rendered = function() {
+  var container = this.$('*').eq(0);
+  this.autorun(function() {
+    var value = Blaze.getData().value;
+    var elData = container.data();
+    if (elData && elData.editable) {
+      elData.editable.setValue(value, true);
+      // no idea why this is necessary; xeditable bug?
+      if (elData.editableContainer)
+        elData.editableContainer.formOptions.value = elData.editable.value;
     }
-  }
-});
-
-save = function() {
-  var data = Router.current().data();
-  Pages.update(data.page._id, { $set: {
-    'templates.spacebars': tplEditor._editor.getValue(),
-    'code.javascript': codeEditor._editor.getValue()
-  }});
-  Session.set('isDirty', false);
-}
+  });
+};

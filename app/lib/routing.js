@@ -14,17 +14,9 @@ Router.route('/', {
 });
 */
 
-Router.route('/', function() {
-	Router.go('/pads/intro/1');
-});
-
-Router.route('/pads/:_id', function() {
-	Router.go('pads', {_id: this.params._id, pageNo: ''});
-});
-
-Router.route('/pads/:_id/:pageNo', {
-	name: 'pads',
-	waitOn: function () {
+PadController = RouteController.extend({
+  layoutTemplate: 'layout',
+  waitOn: function () {
 		return [
 			subs.subscribe('pad', this.params._id),
 			subs.subscribe('page', this.params._id,
@@ -68,4 +60,18 @@ Router.route('/pads/:_id/:pageNo', {
     'code': { to: 'code' },
     'result': { to: 'result' }
   }
+});
+
+Router.route('/pads/:_id/:pageNo', {
+	name: 'padPage',
+	controller: 'PadController'
+});
+
+Router.route('/pads/:_id', {
+	name: 'padHome',
+	controller: 'PadController'
+});
+
+Router.route('/', function() {
+	Router.go('padHome', {_id: 'intro' });
 });

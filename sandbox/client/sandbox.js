@@ -3,6 +3,18 @@ var allowOrigin = isDevel
   ? 'http://localhost:6010'
   : 'https://fview-lab.meteor.com';
 
+Template.__FVL.helpers({
+  result: function() {
+    return (readies.get('famousInit') && readies.get('FVLbody') && readies.get('code'))
+      ? Template.famousInit : null;
+  }
+});
+
+Logger.setLevel('famous-views', 'trace');
+FView.ready(function() {
+  Blaze.render(Template.__FVL, document.body);
+});
+
 function receiveMessage(event) {
   if (event.origin !== allowOrigin || event.data.substr(0,10) !== 'fview-lab ') {
     // event.source == window.parent
@@ -127,25 +139,4 @@ Template.registerHelper('dstache', function() {
 });
 
 // Global, used in lookups.  TODO, better way
-view = { init: 1 };
-
-/*
-view = Blaze.View.prototype;
-var origLookup = view.lookup;
-view.lookup = function() {
-  console.log(this, arguments);
-  return origLookup.apply(this, arguments);
-}
-*/
-
-Template.__FVL.helpers({
-  result: function() {
-    return (readies.get('famousInit') && readies.get('FVLbody') && readies.get('code'))
-      ? Template.famousInit : null;
-  }
-});
-
-Logger.setLevel('famous-views', 'trace');
-FView.ready(function() {
-  Blaze.render(Template.__FVL, document.body);
-});
+view = null;
