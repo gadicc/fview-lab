@@ -1,0 +1,28 @@
+#editorPane {
+	height: 100%;
+	overflow-y: auto;
+	background: #222;
+}
+#editorPane .header {
+	border-top: 1px solid #444;
+	padding: 10px;
+	background: #2F3129;
+	color: white;
+}
+#editorPane > .header { color: #ddd; font-family: verdana; font-size: 88%; }
+#editorPane > .header > div { float: right; }
+#editorPane > .header > div > * { display: inline-block; }
+#editorPane > .header > div > *:not(last-child) { margin-right: 5px; }
+#editorPane > .header > div > a { color: #777; }
+#editorPane > .header > div > a:hover { color: #ccc; }
+#editorPane > .header > div > span { color: #ffa; }
+
+#editorPane .editor {
+}
+
+#editorPane .footer {
+	height: 5px;
+	background: #2F3129;
+	border-bottom: 1px solid black;
+	margin-bottom: 1px;
+}

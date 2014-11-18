@@ -3,6 +3,10 @@ Template.registerHelper('isOwner', function() {
 });
 
 Template.guide.helpers({
+	guideContent: function() {
+		return Session.get('guideContent') || (this.page && this.page.guide)
+			|| 'No guide has been written yet';
+	},
   prevPage: function() {
     return this.page && this.page.pageNo > 1 && (this.page.pageNo-1);
   },
@@ -34,5 +38,10 @@ Template.guide.events({
 			Router.go('padPage', { _id: tpl.data.pad._id, pageNo: tpl.data.page.pageNo-1 });
 			break;
 		}
+	},
+	'click #guideActions a': function(event, tpl) {
+		var action = event.currentTarget.getAttribute('data-action');
+		if (action == 'edit')
+			Session.set('editGuide', !Session.get('editGuide'));
 	}
 });

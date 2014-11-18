@@ -1,0 +1,37 @@
+template(name="code")
+  +Surface
+    +editors
+
+template(name="editors")
+  div#editorPane
+    if editGuide
+      +editGuideTpl
+    div.header
+      div
+        a(data-type="templates",data-value="jade") Jade
+        span Spacebars
+      | Templating
+    div#tplEditor.editor
+    div.footer
+    div.header
+      div
+        a(data-type="code",data-value="coffeescript") CoffeeScript
+        span JavaScript
+      | Code
+    div#codeEditor.editor
+    div.footer
+    div.header
+      div
+        span CSS
+      | Styling
+    div#styleEditor.editor
+      | /* soon */
+    div.footer
+
+template(name="editGuideTpl")
+  div.header
+    div
+      span Markdown
+    | Guide
+  div#guideEditor.editor
+  div.footer        

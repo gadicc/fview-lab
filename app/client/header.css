@@ -1,0 +1,28 @@
+#header {
+	background: black;
+	padding: 0 20px 0 20px;
+	color: white;
+}
+
+#header, #header>div {
+	height: 100%;
+	line-height: 50px;
+}
+
+#headerRight { float: right; }
+#headerRight > div { display: inline-block; }
+
+#header .title { font-size: 18px; color: white; }
+#header .title a { color: white; }
+#header .title a:hover { text-decoration: none; }
+
+#header .nav > li > a:hover, .nav > li > a:focus {
+  /* override bootstap */
+  /*
+	background-color: inherit;
+	text-decoration: underline;
+	/* custom */
+	/*
+	color: #aaa;
+	*/
+}

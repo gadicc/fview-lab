@@ -1,32 +1,6 @@
-/* CSS declarations go here */
-
-#header {
-	background: black;
-	padding: 0 20px 0 20px;
-	color: white;
-}
-
-#header, #header>div {
-	height: 100%;
-	line-height: 50px;
-}
-
-#headerRight { float: right; }
-#headerRight > div { display: inline-block; }
-
-#header .title { font-size: 18px; color: white; }
-#header .title a { color: white; }
-#header .title a:hover { text-decoration: none; }
-
-#header .nav > li > a:hover, .nav > li > a:focus {
-  /* override bootstap */
-  /*
-	background-color: inherit;
-	text-decoration: underline;
-	/* custom */
-	/*
-	color: #aaa;
-	*/
+body {
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 14px;
 }
 
 #iframe {
@@ -37,24 +11,3 @@
 	padding: 0;
 }
 
-body {
-	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-	font-size: 14px;
-}
-
-#editorPane {
-	height: 100%;
-	overflow-y: auto;
-	background: #222;
-}
-#editorPane .header {
-	border-top: 1px solid #444;
-	padding: 10px;
-	background: #2F3129;
-	color: white;
-}
-#editorPane .header span { float: right; }
-#editorPane .editor {
-	border-bottom: 1px solid black;
-	margin-bottom: 1px;
-}

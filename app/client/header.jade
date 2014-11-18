@@ -18,14 +18,23 @@ template(name="header")
       +loginButtons align="right"
     div
       span.title
-        +xedit value=pad.title
-          a.title(data-padid="{{pad._id}}") {{pad.title}}
+        if isOwner
+          +titleEditable
+        else
+          span.title {{pad.title}}
         | #{pageHint}
       | &nbsp;&nbsp;
       if isOwner
         if isDirty
           button.btn.btn-success(data-action="save") Save (Ctrl-S)
         else
-          button.btn ּSaved
-      unless currentUser
-        | not logged in
+          button.btn(disabled) ּSaved
+      if currentUser
+        unless isOwner
+          button.btn.btn-success(data-action="fork") Fork
+      else
+        | Log in to Fork/Save
+
+template(name="titleEditable")
+  +xedit value=pad.title
+    a.title(data-padid="{{pad._id}}") {{pad.title}}

@@ -1,9 +1,43 @@
-codeEditor = null, tplEditor = null;
-Template.aces.rendered = function() {
+Template.editors.events({
+  'click a': function(event, tpl) {
+    var type = event.target.getAttribute('data-type');
+    var value = event.target.getAttribute('data-value');
+    console.log(type, value);
+  }
+});
+
+Template.editors.helpers({
+  'editGuide': function() { return Session.get('editGuide'); }
+});
+
+guideEditor = null;
+Template.editGuideTpl.rendered = function() {
+  guideEditor = new ReactiveAce();
+  guideEditor.attach(this.find('#guideEditor'));
+  guideEditor.theme = "monokai";
+  guideEditor.syntaxMode = "markdown";
+
+  guideEditor._editor.setOptions({
+    maxLines: Infinity
+  });
+
+  guideEditor._editor.getSession().on('change', updateGuide);
+
+  var content;
+  if (content = Session.get('guideContent'))
+    updateEditor('guide', content);
+  else if (editorQueue.guide)
+    updateEditor('guide', editorQueue.guide);
+  else if (this.page)
+    updateEditor('guide', this.page.guide);
+}
+
+codeEditor = null, tplEditor = null, styleEditor = null;
+Template.editors.rendered = function() {
   tplEditor = new ReactiveAce();
   tplEditor.attach(this.find('#tplEditor'));
   tplEditor.theme = "monokai";
-  tplEditor.syntaxMode = "html";
+  tplEditor.syntaxMode = "handlebars";
 
   codeEditor = new ReactiveAce();
   codeEditor.attach(this.find('#codeEditor'));
@@ -11,21 +45,29 @@ Template.aces.rendered = function() {
   codeEditor.syntaxMode = 'javascript';
   codeEditor.parseEnabled = true
 
+  styleEditor = new ReactiveAce();
+  styleEditor.attach(this.find('#styleEditor'));
+  styleEditor.theme = "monokai";
+  styleEditor.syntaxMode = 'css';
+
   tplEditor._editor.getSession().on('change', updateTemplates);
   codeEditor._editor.getSession().on('change', updateCode);
 
-  _.each([codeEditor._editor, tplEditor._editor], function(editor) {
-    editor.setOptions({
-      maxLines: Infinity,
+  _.each([codeEditor._editor, tplEditor._editor, styleEditor._editor],
+    function(editor) {
+      editor.setOptions({
+        maxLines: Infinity,
+      });
+      var session = editor.getSession();
+      session.setUseWrapMode(true);
     });
-    var session = editor.getSession();
-    session.setUseWrapMode(true);
-  });
 
   if (editorQueue.tpl)
     updateEditor('tpl', editorQueue.tpl)
   if (editorQueue.code)
     updateEditor('code', editorQueue.code)
+  if (editorQueue.style)
+    updateEditor('style', editorQueue.style)
 };
 
 /*
@@ -43,7 +85,7 @@ updateEditor = function(which, content) {
   }
   else
     editorQueue[which] = content;
-}
+};
 
 /*
  * Called on every template editor update.
@@ -150,4 +192,14 @@ var updateCode = function(event) {
 
   post({ type: 'javascript', data: content });
   post({ type: 'affectedTemplates', data: affectedTemplates });
+};
+
+var updateGuide = function(event) {
+  // Weird ace bug?  getValue() returns old value, let's only use for user update
+  var content = useThisValue === false ? guideEditor._editor.getValue() : useThisValue;
+  if (!useThisValue) {
+    if (!Session.get('isDirty'))
+      Session.set('isDirty', true);
+    Session.set('guideContent', content);
+  }
 };

@@ -5,11 +5,10 @@ Template.header.helpers({
   },
   isDirty: function() { return Session.get('isDirty'); },
   userPads: function() {
-    if (Meteor.userId())
-      return Pads.find({
-        _id: { $not: this.pad._id },
-        owners: Meteor.userId()
-      });
+    return Meteor.userId() && this.pad && Pads.find({
+      _id: { $not: this.pad._id },
+      owners: Meteor.userId()
+    });
   }
 });
 
@@ -43,9 +42,8 @@ Template.header.events({
   }
 });
 
-Template.header.rendered = function() {
-  if(this.data.pad.owners.indexOf(Meteor.userId()) !== -1)
-  this.$('.title a').editable({
+Template.titleEditable.rendered = function() {
+  this.$('a').editable({
     mode: 'inline',
     success: function(response, newValue) {
       var padId = this.getAttribute('data-padid');
@@ -66,9 +64,16 @@ $(window).bind('keydown', function(event) {
 
 save = function() {
   var data = Router.current().data();
-  Pages.update(data.page._id, { $set: {
+  var update = {
     'templates.spacebars': tplEditor._editor.getValue(),
     'code.javascript': codeEditor._editor.getValue()
-  }});
+  };
+  var guideContent = Session.get('guideContent');
+  if (guideContent) {
+    update.guide = guideContent;
+    Session.set('guideContent', null);
+  }
+
+  Pages.update(data.page._id, { $set: update });
   Session.set('isDirty', false);
-}
+};

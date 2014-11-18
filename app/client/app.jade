@@ -11,40 +11,8 @@ template(name='layout')
       +yield "code"
       +yield "result"
 
-template(name="guide")
-  p
-  | hello
-  p
-    if prevPage
-      button.btn(data-target='prev')
-        i.fa.fa-chevron-left
-        | &nbsp; (#{prevPage}) Back
-    if nextPage
-      button.btn(data-target='next')
-        | Next (#{nextPage}) &nbsp;
-        i.fa.fa-chevron-right
-    else if isOwner
-      button.btn(data-target='createNext')
-        | Create Next &nbsp;
-        i.fa.fa-chevron-right
-
-template(name="code")
-  +Surface
-    +aces
-
 template(name="result")
   +Surface(template="iframe")
 
 template(name="iframe")
   iframe#iframe(sandbox="allow-scripts allow-same-origin")
-
-template(name="aces")
-  div#editorPane
-    div.header
-      span Spacebars
-      | Templating
-    div#tplEditor.editor
-    div.header
-      span JavaScript
-      | Code
-    div#codeEditor.editor

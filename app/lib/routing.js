@@ -37,7 +37,13 @@ PadController = RouteController.extend({
 		Session.set('title', title)
 		window.title = title + ' - fview-lab';
 
-		Session.set('isDirty', false);
+		if (!Session.get('guideContent') || Session.get('pageNo') !== pageNo) {
+			Session.set('isDirty', false);
+			Session.set('guideContent', null);
+		}
+
+		Session.set('pageNo', pageNo);
+
 		return {
 			pad: pad,
 			page: Pages.findOne({ padId:pad._id, pageNo:pageNo })
@@ -53,6 +59,8 @@ PadController = RouteController.extend({
 			post({ type:'clear' }); codes={}; templates={};
 			updateEditor('tpl', page.templates.spacebars);
 			updateEditor('code', page.code.javascript);
+			if (!Session.get('guideContent'))
+				updateEditor('guide', page.guide);
 		}
 	},
   yieldRegions: {
