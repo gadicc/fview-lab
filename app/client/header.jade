@@ -1,17 +1,18 @@
 template(name="header")
   div#header
     div#headerRight
-      ul.nav.navbar-nav
-        li.dropdown
-          a.dropdown-toggle(data-toggle="dropdown",role="button",aria-expanded="false")
-            | My Pads
-            span.caret
-          ul.dropdown-menu(role="menu")
-            li
-              a.pads(data-action="new") Create New
-            each userPads
+      if currentUser
+        ul.nav.navbar-nav
+          li.dropdown
+            a.dropdown-toggle(data-toggle="dropdown",role="button",aria-expanded="false")
+              | My Pads
+              span.caret
+            ul.dropdown-menu(role="menu")
               li
-                a.pads(href="{{pathFor route='padHome' data=this}}") {{title}}
+                a.pads(data-action="new") Create New
+              each userPads
+                li
+                  a.pads(href="{{pathFor route='padHome' data=this}}") {{title}}
 
       | &nbsp;
       +loginButtons align="right"

@@ -16,6 +16,7 @@
 
 #header .title { font-size: 18px; color: white; }
 #header .title a { color: white; }
+#header .title a:hover { text-decoration: none; }
 
 #header .nav > li > a:hover, .nav > li > a:focus {
   /* override bootstap */

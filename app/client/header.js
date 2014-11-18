@@ -5,10 +5,11 @@ Template.header.helpers({
   },
   isDirty: function() { return Session.get('isDirty'); },
   userPads: function() {
-    return Pads.find({
-      _id: { $not: this.pad._id },
-      owners: Meteor.userId()
-    });
+    if (Meteor.userId())
+      return Pads.find({
+        _id: { $not: this.pad._id },
+        owners: Meteor.userId()
+      });
   }
 });
 
