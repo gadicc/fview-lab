@@ -89,6 +89,7 @@ save = function() {
   var update = {};
   update['templates.'+Session.get('tplLang')] = tplEditor._editor.getValue();
   update['code.javascript'] = codeEditor._editor.getValue();
+  update['style.css'] = styleEditor._editor.getValue();
 
   var guideContent = Session.get('guideContent');
   if (guideContent) {

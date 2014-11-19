@@ -59,6 +59,7 @@ Template.editors.rendered = function() {
 
   tplEditor._editor.getSession().on('change', updateTemplates);
   codeEditor._editor.getSession().on('change', updateCode);
+  styleEditor._editor.getSession().on('change', updateStyle);
 
   _.each([codeEditor._editor, tplEditor._editor, styleEditor._editor],
     function(editor) {
@@ -231,6 +232,16 @@ var updateCode = function(event) {
 
   post({ type: 'javascript', data: content });
   post({ type: 'affectedTemplates', data: affectedTemplates });
+};
+
+var updateStyle = function(event) {
+  // Weird ace bug?  getValue() returns old value, let's only use for user update
+  var content = useThisValue === false ? styleEditor._editor.getValue() : useThisValue;
+
+  if (!useThisValue && !Session.get('isDirty'))
+    Session.set('isDirty', true);
+
+  post({ type: 'css', data: content });
 };
 
 var updateGuide = function(event) {

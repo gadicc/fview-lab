@@ -128,6 +128,7 @@ receiveHandlers.clear = function() {
     delete Template[name];
     delete templates[name];
   }
+  styleEl.textContent = '';
   Tracker.afterFlush(function() {
     readies.set('notFlushing', true);
   });
@@ -140,6 +141,15 @@ else if (window.attachEvent)
 else
   alert("Not sure what browser you're using but we can't use it, sorry.");
 
+receiveHandlers.css = function(data) {
+  styleEl.textContent = data;
+};
+
+styleEl = null;
+Meteor.startup(function() {
+  styleEl = document.createElement('style');
+  document.body.appendChild(styleEl);
+});
 
 Template.registerHelper('dstache', function() {
   return '{{';

@@ -84,6 +84,9 @@ PadController = RouteController.extend({
 		  	? 'handlebars' : 'jade';
 
 			updateEditor('code', page.code[Session.get('codeLang')]);
+
+			updateEditor('style', page.style && page.style.css);
+
 			if (!Session.get('guideContent'))
 				updateEditor('guide', page.guide);
 		}
