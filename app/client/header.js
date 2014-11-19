@@ -16,6 +16,21 @@ Template.header.events({
   'click button[data-action="save"]': function(event, tpl) {
     save();
   },
+  'click button[data-action="fork"]': function(event, tpl) {
+    var $btn = $(event.target);
+    $btn.attr('disabled', true);
+    $btn.html('Forking...');
+
+    Meteor.call('fork', this.pad._id, function(error, padId) {
+      if (error)
+        alert(error);
+      else {
+        $btn.attr('disabled', false);
+        $btn.html('Fork');
+        Router.go('padHome', {_id: padId });
+      }
+    });
+  },
   'click a.pads': function(event, tpl) {
     var action = event.currentTarget.getAttribute('data-action');
     switch(action) {

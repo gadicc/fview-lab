@@ -30,8 +30,7 @@ template(name="header")
         else
           button.btn(disabled) ּSaved
       if currentUser
-        unless isOwner
-          button.btn.btn-success(data-action="fork") Fork
+        button.btn.btn-primary(data-action="fork") Fork
       else
         | Log in to Fork/Save
 
