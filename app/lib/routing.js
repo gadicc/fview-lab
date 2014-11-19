@@ -74,7 +74,7 @@ PadController = RouteController.extend({
 						break;
 					}
 				}
-				if (!content) {
+				if (!content && !userOwnsPad(Meteor.userId(), page.padId)) {
 					Session.set('tplLang', currentLang = allLangs[0]);
 					content = page.templates[currentLang];
 				}

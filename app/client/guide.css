@@ -1,4 +1,9 @@
-#guide { position: relative; padding: 10px; }
+#guide {
+	position: relative;
+	padding: 10px;
+	height: 100%;
+	overflow: auto;
+}
 #guideActions {
 	position: absolute;
 	top: 0; right: 0;
