@@ -5,7 +5,11 @@ Template.registerHelper('isOwner', function() {
 Template.guide.helpers({
 	guideContent: function() {
 		return Session.get('guideContent') || (this.page && this.page.guide)
-			|| 'No guide has been written yet';
+			|| 'This page has no guide.';
+	},
+	multiplePagesOrOwner: function() {
+		return (this.pad && this.pad.pages > 1)
+		  || (this.pad && this.pad.owners.indexOf(Meteor.userId()) !== -1);
 	},
   prevPage: function() {
     return this.page && this.page.pageNo > 1 && (this.page.pageNo-1);
@@ -44,7 +48,8 @@ Template.guide.events({
 					if (error)
 						alert(error);
 					else
-						Router.go('padPage', { _id: tpl.data.pad._id, pageNo: newPageNo });
+						if (newPageNo)
+							Router.go('padPage', { _id: tpl.data.pad._id, pageNo: newPageNo });
 				});
 				break;
 		}

@@ -3,7 +3,7 @@ template(name="guide")
     if isOwner
       div#guideActions
         a(data-action="edit")
-          i.fa.fa-pencil.square-o(title="Edit")
+          i.fa.fa-pencil.square-o(title="Toggle Edit")
     div#guideText
       +markdown
         | #{guideContent}
@@ -11,14 +11,17 @@ template(name="guide")
       if prevPage
         button.btn(data-target='prev')
           i.fa.fa-chevron-left
-          | &nbsp; (#{prevPage}) Back
+          | &nbsp; (#{prevPage})
+      if multiplePagesOrOwner
+        button.btn(disabled="disabled")
+          | Page #{page.pageNo}
       if nextPage
         button.btn(data-target='next')
           | Next (#{nextPage}) &nbsp;
           i.fa.fa-chevron-right
       else if isOwner
         button.btn(data-target='createNext')
-          | Create Next &nbsp;
+          | Create &nbsp;
           i.fa.fa-chevron-right
     p
       if isOwner

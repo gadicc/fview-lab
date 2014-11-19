@@ -42,6 +42,8 @@ Meteor.methods({
 		Pads.update(page.padId, { $inc: { pages: -1 } });
 		Pages.update( { padId: page.padId, pageNo: { $gt: page.pageNo } },
 			{ $inc: { pageNo: -1 }});
-		return pad.pages > page.pageNo ? page.pageNo ++ : pad.pages;
+		// if orig pageNo was less than total pages, stay on current route (since
+		// the next page will inherit this pageNo.  Otherwise go to new pages count.
+		return page.pageNo < pad.pages ? false/*keepCurrentRoute*/ : pad.pages-1;
 	}
 });
