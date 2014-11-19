@@ -3,17 +3,21 @@ var allowOrigin = isDevel
   ? 'http://localhost:6010'
   : 'https://fview-lab.meteor.com';
 
-Template.__FVL.helpers({
-  result: function() {
-    return (readies.get('famousInit') && readies.get('FVLbody') /* && readies.get('code') */)
-      ? Template.famousInit : null;
+Template.body.helpers({
+  reactiveBody: function() {
+    // console.log('notFlushing', readies.get('notFlushing'));
+    // console.log('FVLbody', readies.get('FVLbody'));
+    return (readies.get('notFlushing') && readies.get('FVLbody'))
+      ? Template.__fvlBody : null;
   }
 });
 
 Logger.setLevel('famous-views', 'trace');
+/*
 FView.ready(function() {
   Blaze.render(Template.__FVL, document.body);
 });
+*/
 
 function receiveMessage(event) {
   if (event.origin !== allowOrigin || event.data.substr(0,10) !== 'fview-lab ') {
@@ -23,6 +27,7 @@ function receiveMessage(event) {
   }
 
   var data = JSON.parse(event.data.substr(10));
+  // console.log(data);
   if (typeof data === 'object' && data.type && receiveHandlers[data.type])
     receiveHandlers[data.type](data.data || data);
 }
@@ -35,11 +40,11 @@ templatesQueue = [];
 templatesAutorun = null;
 receiveHandlers.template = function(data) {
   // New templates arriving before we finish flushing, queue them
-  if (!readies.get('FVLbody')) {
+  if (!readies.get('notFlushing')) {
     templatesQueue.push(data);
     if (!templatesAutorun) {
       templatesAutorun = Tracker.autorun(function() {
-        if (readies.get('FVLbody')) {
+        if (readies.get('notFlushing')) {
           for (var i=0; i < templatesQueue.length; i++)
             receiveHandlers.template(templatesQueue[i]);
           templatesQueue = [];
@@ -76,8 +81,8 @@ receiveHandlers.template = function(data) {
 
   tpl.dep.changed();
 
-  if (templates.famousInit && !readies.get('famousInit'))
-    readies.set('famousInit', true);
+  if (templates.__fvlBody && !readies.get('FVLbody'))
+    readies.set('FVLbody', true);
 };
 
 receiveHandlers.affectedTemplates = function(data) {
@@ -93,7 +98,7 @@ receiveHandlers.javascript = function(data) {
     readies.set('code', true);
   */
 
-  if (readies.get('famousInit')) {
+  if (readies.get('FVLbody')) {
     try {
       eval(data);
     } catch (error) {
@@ -102,7 +107,7 @@ receiveHandlers.javascript = function(data) {
   } else {
     lastCode = data;
     var tracker = Tracker.autorun(function() {
-      if (readies.get('famousInit') && lastCode) {
+      if (readies.get('FVLbody') && lastCode) {
         try {
           eval(lastCode);
         } catch (error) {
@@ -116,15 +121,15 @@ receiveHandlers.javascript = function(data) {
 };
 
 receiveHandlers.clear = function() {
+  readies.set('notFlushing', false);
   readies.set('FVLbody', false);
-  readies.set('famousInit', false);
   // readies.set('code', false);
   for (var name in templates) {
     delete Template[name];
     delete templates[name];
   }
   Tracker.afterFlush(function() {
-    readies.set('FVLbody', true);
+    readies.set('notFlushing', true);
   });
 };
 
@@ -133,7 +138,7 @@ if (window.addEventListener)
 else if (window.attachEvent)
   window.attachEvent('onmessage', receiveMessage, false);
 else
-  alert('Not sure what browser you\'re using but we can\'t use it, sorry.');
+  alert("Not sure what browser you're using but we can't use it, sorry.");
 
 
 Template.registerHelper('dstache', function() {

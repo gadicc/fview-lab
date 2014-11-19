@@ -18,7 +18,7 @@ gadicohen:accounts-merge
 
 #raix:famono
 mjn:famous
-gadicohen:famous-views
+gadicohen:famous-views@0.1.27-pre.4
 
 iron:router
 npm-container

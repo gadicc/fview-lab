@@ -111,6 +111,8 @@ var updateTemplates = function(event) {
   switch(Session.get('tplLang')) {
 
     case 'spacebars':
+      value = value.replace(/<body>([\s\S]*)<\/body>/,
+        '<template name="__fvlBody">$1</template>');
       var match, re = /<template name="(.*?)">([\s\S]*?)<\/template>/g;
       while ((match = re.exec(value)) !== null) {
         var name = match[1];
@@ -135,6 +137,7 @@ var updateTemplates = function(event) {
     case 'jade':
       try {
         var results = jadeClient.compile(value);
+        results.templates.__fvlBody = results.body;
       } catch (e) {
         errors++;
         break;
