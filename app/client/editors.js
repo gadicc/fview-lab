@@ -1,13 +1,21 @@
+Session.setDefault('codeLang', 'javascript');
+Session.setDefault('tplLang', 'spacebars');
+
+// var isOwnerOrTranslationExistsOrIsTranslateable() :)
+
 Template.editors.events({
   'click a': function(event, tpl) {
     var type = event.target.getAttribute('data-type');
-    var value = event.target.getAttribute('data-value');
-    console.log(type, value);
+    var newLang = event.target.getAttribute('data-value');
+    Session.set(type+'Lang', newLang);
   }
 });
 
 Template.editors.helpers({
-  'editGuide': function() { return Session.get('editGuide'); }
+  editGuide: function() { return Session.get('editGuide'); },
+  isLangCSS: function(type, lang) {
+    return Session.equals(type+'Lang', lang) ? 'selected' : '';
+  }
 });
 
 guideEditor = null;
@@ -37,13 +45,12 @@ Template.editors.rendered = function() {
   tplEditor = new ReactiveAce();
   tplEditor.attach(this.find('#tplEditor'));
   tplEditor.theme = "monokai";
-  tplEditor.syntaxMode = "handlebars";
 
   codeEditor = new ReactiveAce();
   codeEditor.attach(this.find('#codeEditor'));
   codeEditor.theme = "monokai";
-  codeEditor.syntaxMode = 'javascript';
-  codeEditor.parseEnabled = true
+  codeEditor.syntaxMode = Session.get('codeLang');
+  codeEditor.parseEnabled = true;
 
   styleEditor = new ReactiveAce();
   styleEditor.attach(this.find('#styleEditor'));
@@ -62,6 +69,7 @@ Template.editors.rendered = function() {
       session.setUseWrapMode(true);
     });
 
+  // Set in routing.js
   if (editorQueue.tpl)
     updateEditor('tpl', editorQueue.tpl)
   if (editorQueue.code)
@@ -100,25 +108,53 @@ var updateTemplates = function(event) {
   if (!useThisValue && !Session.get('isDirty'))
     Session.set('isDirty', true);
 
-  var match, re = /<template name="(.*?)">([\s\S]*?)<\/template>/g;
-  while ((match = re.exec(value)) !== null) {
-    var name = match[1];
-    var contents = match[2];
-    try {
-      var compiledText = SpacebarsCompiler.compile(contents);
-    } catch (e) {
-      errors++;
+  switch(Session.get('tplLang')) {
+
+    case 'spacebars':
+      var match, re = /<template name="(.*?)">([\s\S]*?)<\/template>/g;
+      while ((match = re.exec(value)) !== null) {
+        var name = match[1];
+        var contents = match[2];
+        try {
+          var compiledText = SpacebarsCompiler.compile(contents);
+        } catch (e) {
+          errors++;
+          break;
+        }
+
+        if (errors)
+          return;
+
+        if (!templates[name] || templates[name] !== compiledText) {
+          templates[name] = compiledText;
+          post({type:'template', name:name, compiled:compiledText});
+        }
+      }
       break;
-    }
 
-    if (errors)
-      return;
+    case 'jade':
+      try {
+        var results = jadeClient.compile(value);
+      } catch (e) {
+        errors++;
+        break;
+      }
 
-    if (!templates[name] || templates[name] !== compiledText) {
-      templates[name] = compiledText;
-      post({type:'template', name:name, compiled:compiledText});
-    }
-  }
+      if (errors)
+        return;
+
+      for (name in results.templates) {
+        var compiledText = SpacebarsCompiler.codeGen(results.templates[name]);
+        if (!templates[name] || templates[name] !== compiledText) {
+          templates[name] = compiledText;
+          post({type:'template', name:name, compiled:compiledText});
+        }
+      }
+      break;
+
+    default:
+      throw new Error("Don't know how to handle " + Session.get('tplLang'));
+  }; /* switch(lang) */
 };
 
 /*

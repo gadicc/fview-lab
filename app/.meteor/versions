@@ -30,6 +30,9 @@ follower-livedata@1.0.2
 force-ssl@1.0.2
 gadicohen:accounts-merge@0.0.1
 gadicohen:famous-views@0.1.25
+gadicohen:jade-client@0.2.9_1
+gadicohen:prism@1.0.3
+gadicohen:snippets@0.0.4-pre.1
 geojson-utils@1.0.1
 github@1.1.1
 google@1.1.2

@@ -34,7 +34,7 @@ Meteor.methods({
 
 		Pages.remove(pageId);
 		var pad = Pads.findOne(page.padId);
-		if (pad.pages == 1) {
+		if (pad.pages === 1) {
 			Pads.remove(pad._id);
 			return 'deleted';
 		}

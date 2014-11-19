@@ -8,15 +8,15 @@ template(name="editors")
       +editGuideTpl
     div.header
       div
-        a(data-type="templates",data-value="jade") Jade
-        span Spacebars
+        a(data-type="tpl",data-value="jade",class="{{isLangCSS 'tpl' 'jade'}}") Jade
+        a(data-type="tpl",data-value="spacebars",class="{{isLangCSS 'tpl' 'spacebars'}}") Spacebars
       | Templating
     div#tplEditor.editor
     div.footer
     div.header
       div
-        a(data-type="code",data-value="coffeescript") CoffeeScript
-        span JavaScript
+        a(data-type="code",data-value="coffeescript",class="{{isLangCSS 'code' 'coffeescript'}}") CoffeeScript
+        a(data-type="code",data-value="javascript",class="{{isLangCSS 'code' 'javascript'}}") JavaScript
       | Code
     div#codeEditor.editor
     div.footer

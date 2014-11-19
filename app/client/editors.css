@@ -11,11 +11,14 @@
 }
 #editorPane > .header { color: #ddd; font-family: verdana; font-size: 88%; }
 #editorPane > .header > div { float: right; }
-#editorPane > .header > div > * { display: inline-block; }
-#editorPane > .header > div > *:not(last-child) { margin-right: 5px; }
-#editorPane > .header > div > a { color: #777; }
-#editorPane > .header > div > a:hover { color: #ccc; }
-#editorPane > .header > div > span { color: #ffa; }
+#editorPane > .header > div > a { display: inline-block; }
+#editorPane > .header > div > a:not(last-child) { margin-right: 5px; }
+
+#editorPane > .header > div > a:not(.selected) { color: #777; cursor: pointer; }
+#editorPane > .header > div > a:not(.selected):hover { color: #ccc; }
+
+#editorPane > .header > div > a.selected { color: #ffa; }
+#editorPane > .header > div > a.selected:hover { text-decoration: none; }
 
 #editorPane .editor {
 }

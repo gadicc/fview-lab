@@ -5,10 +5,12 @@ Template.header.helpers({
   },
   isDirty: function() { return Session.get('isDirty'); },
   userPads: function() {
-    return Meteor.userId() && this.pad && Pads.find({
-      _id: { $not: this.pad._id },
-      owners: Meteor.userId()
-    });
+    var userId = Meteor.userId();
+    if (!userId) return;
+    var query = { owners: userId };
+    if (this.pad)
+      query._id = { $not: this.pad._id };
+    return Pads.find(query);
   }
 });
 
@@ -79,10 +81,15 @@ $(window).bind('keydown', function(event) {
 
 save = function() {
   var data = Router.current().data();
-  var update = {
-    'templates.spacebars': tplEditor._editor.getValue(),
-    'code.javascript': codeEditor._editor.getValue()
-  };
+  if (!userOwnsPad(Meteor.userId(), data.pad)) {
+    alert("Can't save a pad you don't own!");
+    return;
+  }
+
+  var update = {};
+  update['templates.'+Session.get('tplLang')] = tplEditor._editor.getValue();
+  update['code.javascript'] = codeEditor._editor.getValue();
+
   var guideContent = Session.get('guideContent');
   if (guideContent) {
     update.guide = guideContent;

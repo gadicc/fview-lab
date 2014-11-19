@@ -57,8 +57,33 @@ PadController = RouteController.extend({
 		var page = data.page;
 		if (page) {
 			post({ type:'clear' }); codes={}; templates={};
-			updateEditor('tpl', page.templates.spacebars);
-			updateEditor('code', page.code.javascript);
+
+			var content, allLangs, currentLang;
+
+			currentLang = Session.get('tplLang');
+			allLangs = Object.keys(page.templates);
+			content = null;
+			if (allLangs.length && !(content = page.templates[currentLang])) {
+				for (var i=0; i < allLangs.length; i++) {
+					var lang = allLangs[i];
+					if (lang === currentLang)
+						continue;
+					if (snippets.hasMapping(lang, currentLang)) {
+						content = snippets.convert(page.templates[lang],
+							lang, currentLang);
+						break;
+					}
+				}
+				if (!content) {
+					Session.set('tplLang', currentLang = allLangs[0]);
+					content = page.templates[currentLang];
+				}
+			}
+			updateEditor('tpl', content);
+		  tplEditor.syntaxMode = currentLang === 'spacebars'
+		  	? 'handlebars' : 'jade';
+
+			updateEditor('code', page.code[Session.get('codeLang')]);
 			if (!Session.get('guideContent'))
 				updateEditor('guide', page.guide);
 		}
