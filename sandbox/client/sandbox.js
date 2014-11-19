@@ -5,7 +5,7 @@ var allowOrigin = isDevel
 
 Template.__FVL.helpers({
   result: function() {
-    return (readies.get('famousInit') && readies.get('FVLbody') && readies.get('code'))
+    return (readies.get('famousInit') && readies.get('FVLbody') /* && readies.get('code') */)
       ? Template.famousInit : null;
   }
 });
@@ -88,8 +88,10 @@ receiveHandlers.affectedTemplates = function(data) {
 
 var lastCode = null;
 receiveHandlers.javascript = function(data) {
+  /*
   if (!readies.get('code'))
     readies.set('code', true);
+  */
 
   if (readies.get('famousInit')) {
     try {
@@ -116,7 +118,7 @@ receiveHandlers.javascript = function(data) {
 receiveHandlers.clear = function() {
   readies.set('FVLbody', false);
   readies.set('famousInit', false);
-  readies.set('code', false);
+  // readies.set('code', false);
   for (var name in templates) {
     delete Template[name];
     delete templates[name];
