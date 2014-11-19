@@ -1,5 +1,6 @@
 Meteor.methods({
-	'fork': function(id) {
+	fork: function(id) {
+		check(id, String);
 		var pad = Pads.findOne(id);
 		if (!pad)
 			throw new Meteor.Error('404', "Can't fork non-existant pad " + id);
@@ -8,6 +9,9 @@ Meteor.methods({
 		pad.forkedFrom = id;
 		pad.owners = [ this.userId ];
 		pad.title = 'Fork of ' + pad.title;
+		if (pad.updatedAt)
+			delete(pad.updatedAt);
+		pad.createdAt = new Date();
 
 		var pages = Pages.find({padId: id}).fetch();
 
@@ -20,5 +24,24 @@ Meteor.methods({
 		});
 
 		return id;
+	},
+
+	deletePage: function(pageId) {
+		check(pageId, String);
+		var page = Pages.findOne(pageId);
+		if (!page)
+			throw new Meteor.Error('404', "Can't delete non-existant page " + pageId);
+
+		Pages.remove(pageId);
+		var pad = Pads.findOne(page.padId);
+		if (pad.pages == 1) {
+			Pads.remove(pad._id);
+			return 'deleted';
+		}
+
+		Pads.update(page.padId, { $inc: { pages: -1 } });
+		Pages.update( { padId: page.padId, pageNo: { $gt: page.pageNo } },
+			{ $inc: { pageNo: -1 }});
+		return pad.pages > page.pageNo ? page.pageNo ++ : pad.pages;
 	}
 });

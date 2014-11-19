@@ -11,6 +11,16 @@ userOwnsPad = function(userId, pad) {
 	return !!pad && pad.owners.indexOf(userId) !== -1;
 }
 
+var createdAt = function(userId, doc) {
+	doc.createdAt = new Date();
+};
+var updatedAt = function(userId, currentDoc, fieldNames, modifier) {
+	if (modifier.$set)
+		modifier.$set.updatedAt = new Date();
+	else
+		modifier.$set = { updatedAt: new Date() };
+};
+
 // TODO, disallow user to touch view stats, etc
 
 Pads.allow({
@@ -22,6 +32,13 @@ Pages.allow({
 	insert: userOwnsPad,
 	update: userOwnsPad
 });
+
+if (Meteor.isServer) {
+	Pads.before.insert(createdAt);
+	Pads.before.update(updatedAt);
+	Pages.before.insert(createdAt);
+	Pages.before.update(updatedAt);
+}
 
 if (Meteor.isServer) {
 	Meteor.publish('mypads', function(limit) {

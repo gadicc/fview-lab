@@ -21,22 +21,32 @@ Template.guide.events({
 
 		switch(target) {
 			case 'createNext':
-			/* no break, continue to "next" */
-			Pages.insert({
-				padId: tpl.data.pad._id,
-				pageNo: tpl.data.page.pageNo+1,
-				templates: {},
-				code: {}
-			});
-			Pads.update(tpl.data.pad._id, { $inc: { pages: 1 }} );
+				/* no break, continue to "next" */
+				Pages.insert({
+					padId: tpl.data.pad._id,
+					pageNo: tpl.data.page.pageNo+1,
+					templates: {},
+					code: {}
+				});
+				Pads.update(tpl.data.pad._id, { $inc: { pages: 1 }} );
 
 			case 'next':
-			Router.go('padPage', { _id: tpl.data.pad._id, pageNo: tpl.data.page.pageNo+1 });
-			break;
+				Router.go('padPage', { _id: tpl.data.pad._id, pageNo: tpl.data.page.pageNo+1 });
+				break;
 
 			case 'prev':
-			Router.go('padPage', { _id: tpl.data.pad._id, pageNo: tpl.data.page.pageNo-1 });
-			break;
+				Router.go('padPage', { _id: tpl.data.pad._id, pageNo: tpl.data.page.pageNo-1 });
+				break;
+
+			case 'deletePage':
+				if (confirm('Are you sure you want to delete this page?'))
+				Meteor.call('deletePage', tpl.data.page._id, function(error, newPageNo) {
+					if (error)
+						alert(error);
+					else
+						Router.go('padPage', { _id: tpl.data.pad._id, pageNo: newPageNo });
+				});
+				break;
 		}
 	},
 	'click #guideActions a': function(event, tpl) {
