@@ -29,3 +29,10 @@
 	border-bottom: 1px solid black;
 	margin-bottom: 1px;
 }
+
+#editorPane .editorSuccess {
+	color: #575;
+}
+#editorPane .editorError {
+	text-shadow: 0 0 5px #800;
+}

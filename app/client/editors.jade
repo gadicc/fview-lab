@@ -11,6 +11,12 @@ template(name="editors")
         a(data-type="tpl",data-value="jade",class="{{isLangCSS 'tpl' 'jade'}}") Jade
         a(data-type="tpl",data-value="spacebars",class="{{isLangCSS 'tpl' 'spacebars'}}") Spacebars
       | Templating
+      if tplError
+        span(class="editorError",title="Error: #{tplError}")
+          i.fa.fa-fw.fa-times
+      else
+        span(class="editorSuccess") 
+          i.fa.fa-fw.fa-check
     div#tplEditor.editor
     div.footer
     div.header
@@ -18,6 +24,12 @@ template(name="editors")
         a(data-type="code",data-value="coffeescript",class="{{isLangCSS 'code' 'coffeescript'}}") CoffeeScript
         a(data-type="code",data-value="javascript",class="{{isLangCSS 'code' 'javascript'}}") JavaScript
       | Code
+      if jsError
+        span(class="editorError",title="Error: #{jsError}")
+          i.fa.fa-fw.fa-times
+      else
+        span(class="editorSuccess") 
+          i.fa.fa-fw.fa-check
     div#codeEditor.editor
     div.footer
     div.header

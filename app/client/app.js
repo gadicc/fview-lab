@@ -10,8 +10,8 @@ FView.ready(function() {
 
 iframe = null;
 var iframeSrc = isDevel
-  ? 'http://localhost:6020/'
-  : 'https://fview-lab-sandbox.meteor.com/';
+  ? 'http://localhost:6020'
+  : 'https://fview-lab-sandbox.meteor.com';
 
 var postQueue = [];
 post = function(data) {
@@ -34,15 +34,33 @@ Template.iframe.rendered = function() {
   //console.log(iframe);
 }
 
+sandbox = new ReactiveDict();
+Template.result.helpers({
+  sandbox: {
+    jsError: function() { return sandbox.get('jsError'); }
+  }
+});
+
 function receiveMessage(event) {
-  if (event.data.substr(0,10) === 'fview-lab ' || event.origin !== iframeSrc) {
+  if (event.origin !== iframeSrc || event.data.substr(0,10) !== 'fview-lab ') {
     console.log('ignore', event);
     return;
   }
 
-  var data = JSON.parse(event.data.substr(11));  // strip "fview-lab "
-  console.log(data);
+  var data = JSON.parse(event.data.substr(10));  // strip "fview-lab "
+
+  if (data.type=='setVar')
+    sandbox.set(data.name, data.value);
+  else
+    console.log('Unknown ', data);
 }
+
+if (window.addEventListener)
+  window.addEventListener('message', receiveMessage, false);
+else if (window.attachEvent)
+  window.attachEvent('onmessage', receiveMessage, false);
+else
+  alert("Not sure what browser you're using but we can't use it, sorry.");
 
 Meteor.subscribe('mypads', 5);
 
@@ -64,4 +82,10 @@ Template.xedit.rendered = function() {
 var hashSeed = '0xABCD';
 hash = function(input) {
   return XXH(input, hashSeed).toString(16);
+}
+
+// could keep sorted to optimize :)
+insertNoDupes = function(array, value) {
+  if (array.indexOf(value) === -1)
+    array.push(value);
 }

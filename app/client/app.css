@@ -11,3 +11,7 @@ body {
 	padding: 0;
 }
 
+.jsError {
+	text-shadow: 0 0 5px #800;
+	cursor: pointer;
+}

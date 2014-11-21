@@ -11,11 +11,14 @@ Template.editors.events({
   }
 });
 
+Session.set('tplError', false);
 Template.editors.helpers({
   editGuide: function() { return Session.get('editGuide'); },
   isLangCSS: function(type, lang) {
     return Session.equals(type+'Lang', lang) ? 'selected' : '';
-  }
+  },
+  tplError: function() { return Session.get('tplError'); },
+  jsError: function() { return Session.get('jsError'); }
 });
 
 guideEditor = null;
@@ -111,7 +114,6 @@ templates = {};
 var updateTemplates = function(event) {
   // Weird ace bug?  getValue() returns old value, let's only use for user update
   var value = useThisValue === false ? tplEditor._editor.getValue() : useThisValue;
-  var errors = 0;
 
   if (!useThisValue && !Session.get('isDirty'))
     Session.set('isDirty', true);
@@ -127,32 +129,28 @@ var updateTemplates = function(event) {
         var contents = match[2];
         try {
           var compiledText = SpacebarsCompiler.compile(contents);
-        } catch (e) {
-          errors++;
-          break;
-        }
-
-        if (errors)
+        } catch (err) {
+          Session.set('tplError', err.message);
           return;
+        }
 
         if (!templates[name] || templates[name] !== compiledText) {
           templates[name] = compiledText;
           post({type:'template', name:name, compiled:compiledText});
         }
       }
+      Session.set('tplError', false);
       break;
 
     case 'jade':
       try {
         var results = jadeClient.compile(value);
         results.templates.__fvlBody = results.body;
-      } catch (e) {
-        errors++;
-        break;
-      }
-
-      if (errors)
+      } catch (err) {
+        Session.set('tplError', err.message);
         return;
+      }
+      Session.set('tplError', false);
 
       for (name in results.templates) {
         var compiledText = SpacebarsCompiler.codeGen(results.templates[name]);
@@ -189,8 +187,10 @@ var updateCode = function(event) {
   try {
     parsed = esprima.parse(content);
   } catch (error) {
+    Session.set('jsError', error.message);
     return;
   }
+  Session.set('jsError', false);
 
   if (!parsed.body)
     return;
@@ -217,7 +217,9 @@ var updateCode = function(event) {
       if (item.type === 'ExpressionStatement') {
         if (item.expression.type === 'AssignmentExpression') {
           // Template.name.something =
-          if (item.expression.left.object.object
+          if (item.expression.left
+              && item.expression.left.object
+              && item.expression.left.object.object
               && item.expression.left.object.object.name === 'Template') {
             insertNoDupes(affectedTemplates,
               item.expression.left.object.property.name);
@@ -226,7 +228,9 @@ var updateCode = function(event) {
           }
         } else if (item.expression.type === 'CallExpression') {
           // Template.name.something()
-          if (item.expression.callee.object.object
+          if (item.expression.callee
+              && item.expression.callee.object
+              && item.expression.callee.object.object
               && item.expression.callee.object.object.name === 'Template') {
             insertNoDupes(affectedTemplates,
               item.expression.callee.object.property.name);
@@ -240,7 +244,7 @@ var updateCode = function(event) {
     }
   }
 
-  if (!changed)
+  if (!changed && codes.length === newCodes.length)
     return;
 
   codes = newCodes; // all currently existing
@@ -248,12 +252,6 @@ var updateCode = function(event) {
   post({ type: 'javascript', data: content });
   post({ type: 'affectedTemplates', data: affectedTemplates });
 };
-
-// could keep sorted to optimize :)
-insertNoDupes = function(array, value) {
-  if (array.indexOf(value) === -1)
-    array.push(value);
-}
 
 var updateStyle = function(event) {
   // Weird ace bug?  getValue() returns old value, let's only use for user update

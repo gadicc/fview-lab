@@ -6,6 +6,7 @@ meteor-platform
 #insecure
 
 reactive-var
+reactive-dict
 spacebars-compiler
 force-ssl
 
