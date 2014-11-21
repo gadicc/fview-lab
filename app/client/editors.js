@@ -25,9 +25,14 @@ Template.editGuideTpl.rendered = function() {
   guideEditor.theme = "monokai";
   guideEditor.syntaxMode = "markdown";
 
-  guideEditor._editor.setOptions({
+  var editor = guideEditor._editor;
+  editor.setOptions({
     maxLines: Infinity
   });
+  var session = editor.getSession();
+  session.setUseWrapMode(true);
+  session.setTabSize(2);
+  session.setUseSoftTabs(true);
 
   guideEditor._editor.getSession().on('change', updateGuide);
 
@@ -68,6 +73,8 @@ Template.editors.rendered = function() {
       });
       var session = editor.getSession();
       session.setUseWrapMode(true);
+      session.setTabSize(2);
+      session.setUseSoftTabs(true);
     });
 
   // Set in routing.js
