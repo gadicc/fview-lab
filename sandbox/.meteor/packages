@@ -13,6 +13,7 @@ meteorhacks:inject-initial
 
 # fview plugins
 #gadicohen:fview-lagometer
+mjn:famous-animate
 
 # Enable before deploy
 #appcache

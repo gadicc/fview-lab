@@ -56,7 +56,7 @@ PadController = RouteController.extend({
 
 		var page = data.page;
 		if (page) {
-			post({ type:'clear' }); codes={}; templates={};
+			post({ type:'clear' }); codes=[]; templates={};
 
 			var content, allLangs, currentLang;
 

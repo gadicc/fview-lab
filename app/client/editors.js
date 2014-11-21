@@ -167,7 +167,8 @@ var updateTemplates = function(event) {
  * Go through code and see if any Template.x stuff has been done,
  * and post affectedTemplates to sandbox
  */
-codes = {};
+//codes = {};
+codes = [];
 var updateCode = function(event) {
   // Weird ace bug?  getValue() returns old value, let's only use for user update
   var content = useThisValue === false ? codeEditor._editor.getValue() : useThisValue;
@@ -175,6 +176,8 @@ var updateCode = function(event) {
 
   if (!useThisValue && !Session.get('isDirty'))
     Session.set('isDirty', true);
+
+  content = content.replace(/Template.body/g, 'Template.__fvlBody');
 
   try {
     parsed = esprima.parse(content);
@@ -185,54 +188,60 @@ var updateCode = function(event) {
   if (!parsed.body)
     return;
 
-  // All we really want to know is which templates are potentially
-  // affected by the code change, e.g. Template.x.helpers affects x.
-  var affectedTemplates = [];
-  _.each(parsed.body, function(item) {
-    if (item.type === 'ExpressionStatement') {
-      var checkit = null;
+  /*
+   * We actually pass all the JavaScript to be eval'd in the sandbox.
+   * But what's important is what is new or changed, and which templates
+   * that effects.  If only a `Template.myTpl.something =` or
+   * `Template.myTpl.something()` was new or changed, we only need
+   * myTpl to be rerendered.  If anything else was changed, to be safe,
+   * we have to rerendered the entire body and don't care anymore, ie.
+   * `affectedTemplates = ['__fvlBody']; break;`
+   *
+   * To super optimize, we could see which globals are being used by
+   * which template callbacks... but, no need for that as this point.
+   */
+  var newCodes = [], affectedTemplates = [];
+  for (var i=0; i < parsed.body.length; i++) {
+    newCodes.push(hash(JSON.stringify(parsed.body[i])));
+    if (codes.indexOf(newCodes[i]) === -1) {
+      var item = parsed.body[i];
 
-      if (item.expression.type === 'AssignmentExpression') {
-        if (item.expression.left.object.object
-            && item.expression.left.object.object.name === 'Template') {
-          checkit = {
-            tplName: item.expression.left.object.property.name,
-            property: item.expression.left.property.name,
-            serialized: JSON.stringify(item.expression.right)
+      if (item.type === 'ExpressionStatement') {
+        if (item.expression.type === 'AssignmentExpression') {
+          // Template.name.something =
+          if (item.expression.left.object.object
+              && item.expression.left.object.object.name === 'Template') {
+            insertNoDupes(affectedTemplates,
+              item.expression.left.object.property.name);
+          } else {
+            affectedTemplates = ['__fvlBody']; break;
           }
-        }
-
-      } else if (item.expression.type === 'CallExpression') {
-        if (item.expression.callee.object.object
-            && item.expression.callee.object.object.name === 'Template') {
-
-          checkit = {
-            tplName: item.expression.callee.object.property.name,
-            method: item.expression.callee.property.name,
-            serialized: JSON.stringify(item.expression.arguments)
-          }            
-        }
-      } /* item.expression.type === 'CallExpression' */
-    } /* item.type === 'ExpressionStatement' */
-
-    if (checkit) {
-      var code = codes[checkit.tplName];
-      var what = checkit.method || checkit.property;
-      if (!code)
-        code = codes[checkit.tplName] = {};
-
-      if (!code[what] || code[what] !== checkit.serialized) {
-        code[what] = checkit.serialized;
-        if (affectedTemplates.indexOf(checkit.tplName) === -1)
-          affectedTemplates.push(checkit.tplName);
+        } else if (item.expression.type === 'CallExpression') {
+          // Template.name.something()
+          if (item.expression.callee.object.object
+              && item.expression.callee.object.object.name === 'Template') {
+            insertNoDupes(affectedTemplates,
+              item.expression.callee.object.property.name);
+          } else {
+            affectedTemplates = ['__fvlBody']; break;
+          }
+        } /* item.expression.type === 'CallExpression' */
+      } /* item.type === 'ExpressionStatement' */ else {
+        affectedTemplates = ['__fvlBody']; break;
       }
     }
-
-  }); /* _.each(parsed.body) */
+  }
+  codes = newCodes; // all currently existing
 
   post({ type: 'javascript', data: content });
   post({ type: 'affectedTemplates', data: affectedTemplates });
 };
+
+// could keep sorted to optimize :)
+insertNoDupes = function(array, value) {
+  if (array.indexOf(value) === -1)
+    array.push(value);
+}
 
 var updateStyle = function(event) {
   // Weird ace bug?  getValue() returns old value, let's only use for user update

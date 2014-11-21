@@ -15,6 +15,7 @@ var iframeSrc = isDevel
 
 var postQueue = [];
 post = function(data) {
+//  console.log(data);
   postQueue.push(data);
 }
 
@@ -60,3 +61,8 @@ Template.xedit.rendered = function() {
     }
   });
 };
+
+var hashSeed = '0xABCD';
+hash = function(input) {
+  return XXH(input, hashSeed).toString(16);
+}
