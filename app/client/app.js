@@ -15,7 +15,6 @@ var iframeSrc = isDevel
 
 var postQueue = [];
 post = function(data) {
-//  console.log(data);
   postQueue.push(data);
 }
 

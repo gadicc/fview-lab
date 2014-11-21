@@ -200,11 +200,12 @@ var updateCode = function(event) {
    * To super optimize, we could see which globals are being used by
    * which template callbacks... but, no need for that as this point.
    */
-  var newCodes = [], affectedTemplates = [];
+  var newCodes = [], affectedTemplates = [], changed = false;
   for (var i=0; i < parsed.body.length; i++) {
     newCodes.push(hash(JSON.stringify(parsed.body[i])));
     if (codes.indexOf(newCodes[i]) === -1) {
       var item = parsed.body[i];
+      if (!changed) changed = true;
 
       if (item.type === 'ExpressionStatement') {
         if (item.expression.type === 'AssignmentExpression') {
@@ -231,6 +232,10 @@ var updateCode = function(event) {
       }
     }
   }
+
+  if (!changed)
+    return;
+
   codes = newCodes; // all currently existing
 
   post({ type: 'javascript', data: content });

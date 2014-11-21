@@ -37,7 +37,8 @@ PadController = RouteController.extend({
 		Session.set('title', title)
 		window.title = title + ' - fview-lab';
 
-		if (!Session.get('guideContent') || Session.get('pageNo') !== pageNo) {
+		var guideContent = Tracker.nonreactive(function() { return Session.get('guideContent'); });
+		if (!guideContent || Session.get('pageNo') !== pageNo) {
 			Session.set('isDirty', false);
 			Session.set('guideContent', null);
 		}
@@ -87,7 +88,7 @@ PadController = RouteController.extend({
 
 			updateEditor('style', page.style && page.style.css);
 
-			if (!Session.get('guideContent'))
+			if (!Tracker.nonreactive(function() { return Session.get('guideContent'); }))
 				updateEditor('guide', page.guide);
 		}
 	},
