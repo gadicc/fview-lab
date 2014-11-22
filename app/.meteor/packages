@@ -1,6 +1,3 @@
-# Enable before deploy
-#appcache
-
 meteor-platform
 #autopublish
 #insecure
@@ -19,7 +16,7 @@ gadicohen:accounts-merge
 
 #raix:famono
 mjn:famous
-gadicohen:famous-views@0.1.27-pre.4
+gadicohen:famous-views
 
 iron:router
 npm-container
@@ -37,3 +34,7 @@ chuangbo:marked
 matb33:collection-hooks
 gadicohen:snippets
 gadicohen:jade-client
+
+# Enable before deploy
+# currently 16.7 MB **MINIFIED**  d'oh
+# appcache

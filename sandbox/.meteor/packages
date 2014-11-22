@@ -5,15 +5,20 @@
 
 meteor-platform
 mjn:famous
-gadicohen:famous-views@0.1.27-pre.4
+gadicohen:famous-views@0.1.28
 mquandalle:jade
 reactive-var
 reactive-dict
 meteorhacks:inject-initial
 
 # fview plugins
-#gadicohen:fview-lagometer
-mjn:famous-animate
+pierreeric:fview-bksurfaceimage 
+gadicohen:fview-kenburns
+gadicohen:fview-lagometer
+pierreeric:fview-animatedicon
+pierreeric:fview-dotloader
+pierreeric:fview-devices
+mjn:fview-animate
 
 # Enable before deploy
-#appcache
+appcache

@@ -1,3 +1,6 @@
+// Uh oh, look into this.
+//Meteor.AppCache.config({onlineOnly: '/packages/dcsan_reactive-ace/'});
+
 var isDevel = Injected.obj('env').NODE_ENV === 'development';
 
 FView.ready(function() {
