@@ -6,7 +6,7 @@ template(name="guide")
           i.fa.fa-pencil.square-o(title="Toggle Edit")
     div#guideText
       +markdown
-        | #{guideContent}
+        #{guideContent}
     p
       if prevPage
         button.btn(data-target='prev')
