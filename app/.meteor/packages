@@ -25,6 +25,7 @@ dcsan:reactive-ace
 meteorhacks:subs-manager
 #meteorhacks:fast-render
 meteorhacks:inject-initial
+meteorhacks:ssr
 
 mizzao:bootstrap-3
 #useraccounts:bootstrap

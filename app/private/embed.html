@@ -1,0 +1,84 @@
+<html>
+
+	<head>
+		<style type="text/css">
+			body {
+				margin: 0;
+				border: 1px solid black;
+				height: 100%;
+				background: #F9EAAF;
+			  -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+			  -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+			  box-sizing: border-box;         /* Opera/IE 8+ */
+			  padding-top: 30px;
+			}
+
+			#embedHeader {
+				position: absolute;
+				top: 1; left: 1; right: 1;
+				height: 30px;
+				background: #ffc200;
+			}
+
+			iframe {
+				height: 100%;
+				width: 100%;
+				margin: 0;
+				padding: 0;
+				border: none;
+			}
+
+			#embedHeader > a {
+				float: right;
+				padding: 8px 10px 8px 10px;
+			}
+
+			#embedHeader > button {
+				background: none;
+				border: none;
+				padding: 8px 10px 8px 10px;
+			}
+
+			#embedHeader > button.active {
+				background: #775500;
+				color: white;
+			}
+		</style>
+
+		<script type="text/javascript">
+			var pad = {{padJSON}};
+			var page = {{pageJSON}};
+			var templates = {{templatesJSON}};
+			var iframeSrc = "http://localhost:6020";
+
+			var iframe;
+	    post = function(data) {
+	      iframe.contentWindow.postMessage(
+	        'fview-lab ' + JSON.stringify(data), iframeSrc);
+	    };
+
+			window.onload = function() {
+				iframe = document.getElementById('iframe');
+		    iframe.onload = function() {
+		    	post({type:'clear'});
+					for (var name in templates)
+						post({type:'template', name:name, compiled:templates[name]});
+		    };
+		    iframe.src = iframeSrc;
+			};
+		</script>
+	</head>
+
+	<body>
+		<div id="embedHeader">
+			<a href="/pads/{{pad._id}}/{{page.pageNo}}" target="_TOP">play @ fview-lab</a>
+			<button>Spacebars</button>
+			<button>JavaScript</button>
+			<button>CSS</button>
+			<button class="active">Result</button>
+		</div>
+
+		<iframe id="iframe" sandbox="allow-scripts allow-same-origin"></iframe>
+	</body>
+
+</html>
