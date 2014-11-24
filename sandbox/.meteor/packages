@@ -12,13 +12,14 @@ reactive-dict
 meteorhacks:inject-initial
 
 # fview plugins
+mjn:fview-animate
+pierreeric:fview-animatedicon
 pierreeric:fview-bksurfaceimage 
+pierreeric:fview-devices
+pierreeric:fview-dotloader
+wenape:fview-infinitescrollview
 gadicohen:fview-kenburns
 gadicohen:fview-lagometer
-pierreeric:fview-animatedicon
-pierreeric:fview-dotloader
-pierreeric:fview-devices
-mjn:fview-animate
 
 # Enable before deploy
 appcache

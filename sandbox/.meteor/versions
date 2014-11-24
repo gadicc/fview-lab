@@ -16,7 +16,7 @@ deps@1.0.5
 ejson@1.0.4
 fastclick@1.0.1
 follower-livedata@1.0.2
-gadicohen:famous-views@0.1.28
+gadicohen:famous-views@0.1.29
 gadicohen:fview-kenburns@1.0.1
 gadicohen:fview-lagometer@1.0.2
 geojson-utils@1.0.1
@@ -66,3 +66,4 @@ underscore@1.0.1
 url@1.0.2
 webapp-hashing@1.0.1
 webapp@1.1.4
+wenape:fview-infinitescrollview@1.0.0
