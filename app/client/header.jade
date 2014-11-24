@@ -1,5 +1,6 @@
 template(name="header")
   div#header
+
     div#headerRight
       if currentUser
         ul.nav.navbar-nav
@@ -16,6 +17,7 @@ template(name="header")
 
       | &nbsp;
       +loginButtons align="right"
+
     div
       span.title
         if isOwner
@@ -24,6 +26,9 @@ template(name="header")
           span.title {{pad.title}}
         | #{pageHint}
       | &nbsp;&nbsp;
+      i#padInfoIcon.fa.fa-info-circle.fa-lg(class=padInfoActive)
+        div#whiteArrowUp
+      | &nbsp;
       if isOwner
         if isDirty
           button.btn.btn-success(data-action="save") Save (Ctrl-S)

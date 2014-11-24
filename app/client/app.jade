@@ -1,15 +1,19 @@
 head
   meta(name='viewport', content='width=device-width, maximum-scale=1, user-scalable=no')
 
-template(name='layout')
+template(name='padLayout')
   +HeaderFooterLayout headerSize="50" footerSize="0"
     +Modifier target="header" translate="[0,0,1000]"
       +Surface template="header"
-    +FlexibleLayout target="content" ratios="[0.28,0.42,0.3]"
-      +Surface
-        +yield "guide"
-      +yield "code"
-      +yield "result"
+    +Modifier target="content"
+      +FlexibleLayout target="content" ratios="[0.28,0.42,0.3]"
+        +Surface
+          +yield "guide"
+        +yield "code"
+        +yield "result"
+      if overlay
+        +Surface style="background: white"
+          +yield "overlay"
 
 template(name="result")
   +Modifier

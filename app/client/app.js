@@ -92,3 +92,7 @@ insertNoDupes = function(array, value) {
   if (array.indexOf(value) === -1)
     array.push(value);
 }
+
+Template.padLayout.overlay = function() {
+  return Session.get('overlay');
+}

@@ -15,7 +15,7 @@ Router.route('/', {
 */
 
 PadController = RouteController.extend({
-  layoutTemplate: 'layout',
+  layoutTemplate: 'padLayout',
   waitOn: function () {
 		return [
 			subs.subscribe('pad', this.params._id),
@@ -50,10 +50,15 @@ PadController = RouteController.extend({
 			page: Pages.findOne({ padId:pad._id, pageNo:pageNo })
 		}
 	},
+	action: function() {
+		console.log(this.params);
+	},
 	onAfterAction: function() {
 		var data = this.data();
 		if (!data.pad)
 			return;
+
+		subs.subscribe('padStats', data.pad._id);
 
 		var page = data.page;
 		if (page) {

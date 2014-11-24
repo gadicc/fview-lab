@@ -1,5 +1,6 @@
 Pads = new Mongo.Collection('pads');
 Pages = new Mongo.Collection('pages');
+PadStats = new Mongo.Collection('padStats');
 
 // Takes a padId, a pad, or a page
 userOwnsPad = function(userId, pad) {
@@ -55,6 +56,14 @@ if (Meteor.isServer) {
 			padId: padId,
 			$or: [ { pageNo: pageNo }, { pageNo: pageNo + 1 } ]
 		}, { limit: 2 });
+	});
+	Meteor.publish('padStats', function(id) {
+		check(id, String);
+		// aggregate not sopported in minimongo yet
+		// TODO, aggregate directly with mongo and manually publish
+		return PadStats.find({
+			_id: id,
+		}, { limit: 1} );
 	});
 
 	// Populate initial data

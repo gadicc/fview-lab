@@ -1,0 +1,20 @@
+template(name="padInfo")
+  p hello there
+  p Slug
+    input(type="text",id="slug")
+    br
+    span#link
+  p Embed code
+    input(type="text",id="embedCode",value="#{embedCode}")
+  table#siteCounts
+    tr
+      th(colspan="2") Referring sites
+    tr
+      th Site
+      th Views
+    each padStats.siteCounts
+      tr
+        td
+          img(src="http://{{host}}/favicon.ico")
+          | {{host}}
+        td {{count}}

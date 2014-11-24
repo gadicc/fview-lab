@@ -11,10 +11,20 @@ Template.header.helpers({
     if (this.pad)
       query._id = { $not: this.pad._id };
     return Pads.find(query);
+  },
+  padInfoActive: function() {
+    return Session.get('showpadInfo') ? 'active' : '';
   }
 });
 
 Template.header.events({
+  'click #padInfoIcon': function(event, tpl) {
+    var state = !Session.get('showpadInfo');
+    Session.set('showpadInfo', state);
+    Session.set('overlay', state);
+    if (state)
+      Router.current().render('padInfo', { to: 'overlay'} );
+  },
   'click button[data-action="save"]': function(event, tpl) {
     save();
   },

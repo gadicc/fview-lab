@@ -1,3 +1,10 @@
+AccountsExtra.init({
+	saveCreatedAt: true,
+	saveProfilePic: true,
+	saveServiceUsername: true,
+	setAccountUsername: true
+});
+
 Meteor.methods({
 	fork: function(id) {
 		check(id, String);
@@ -45,5 +52,69 @@ Meteor.methods({
 		// if orig pageNo was less than total pages, stay on current route (since
 		// the next page will inherit this pageNo.  Otherwise go to new pages count.
 		return page.pageNo < pad.pages ? false/*keepCurrentRoute*/ : pad.pages-1;
+	},
+
+	routeView: function(url) {
+		check(url, String);
+
 	}
+});
+
+/*
+// once off, done
+Meteor.users.find({username:{$exists:false}}).forEach(function(user) {
+	var username;
+	if (user.services && user.services.github)
+		username = user.services.github.username;
+	if (!username && user.emails && user.emails.length)
+		username = user.emails[0].address.split('@', 1)[0];
+	if (!username) {
+		console.log("not sure what to do with ", user);
+		return;
+	}
+	AccountsExtra.setUserName(user, username);
+	Meteor.users.update(user._id, { $set: { username: user.username }});
+	console.log('set ' + user.username);
+});
+*/
+
+// Listen to incoming HTTP requests, can only be used on the server
+WebApp.connectHandlers.use(function(req, res, next) {
+	var parts = req.url.split('/').slice(1);
+	if (parts.length < 2)
+		return next();
+
+	var pad;
+	if (parts[0] === 'pads' || parts[0] === 'embed')
+		pad = Pads.findOne(parts[1]);
+	// else if USER
+	else
+		return next();
+
+	if (!pad)
+		return next();
+
+	if (!(req.headers && req.headers.referer))
+		return next();
+
+	var host = req.headers.referer.match(/^https?:\/\/([^\/]+)\//);
+	if (host && host.length > 1)
+		host = host[1].split(':', 1)[0].toLowerCase().replace(/^www/, '');
+
+	// can't upsert with positional operators
+	if (PadStats.findOne(pad._id, { fields: { _id: 1 }}))
+		PadStats.update({
+			_id: pad._id,
+			siteCounts: {$elemMatch: { host: host }}
+		}, {
+			$inc: {
+				"siteCounts.$.count": 1
+			}
+		});
+	else
+		PadStats.insert( {_id: pad._id, siteCounts: [
+			{ host: host, count: 1 }
+		] });
+
+	next();
 });
