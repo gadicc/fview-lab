@@ -1,0 +1,13 @@
+template(name='userHeader')
+  div#header
+    div#headerRight
+      +loginButtons align="right"
+    div
+      span.title #{user.username}'s pads
+      p {{x}}
+
+template(name='userHome')
+  ul
+    each pads
+      li
+        a(href="/pads/#{_id}") #{title}

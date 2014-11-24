@@ -1,4 +1,4 @@
-Template.header.helpers({
+Template.padHeader.helpers({
   pageHint: function() {
     return this.pad && this.page && this.pad.pages > 1
       ? ' ('+this.page.pageNo+'/'+this.pad.pages+')' : '';
@@ -17,7 +17,7 @@ Template.header.helpers({
   }
 });
 
-Template.header.events({
+Template.padHeader.events({
   'click #padInfoIcon': function(event, tpl) {
     var state = !Session.get('showpadInfo');
     Session.set('showpadInfo', state);

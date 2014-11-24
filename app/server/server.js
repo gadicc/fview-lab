@@ -55,8 +55,32 @@ Meteor.methods({
 	},
 
 	routeView: function(url) {
+		// track page views
+		// for logged in users, track viewed pads, maxpage, lastviewdate
 		check(url, String);
+		url = url.split('/');
 
+		if (url[1] === 'pads') {
+			var pad = Pads.findOne(url[2]);
+		} else {
+			// /username/slug
+		}
+
+		if (!pad)
+			return;
+
+		var pageNo = url[3] || '1';
+
+		// if user isn't logged in, just up the view count
+		if (1 || !this.userId) {
+			var inc = {}; inc['pages.p'+pageNo+'.views'] = 1;
+			PadStats.update(pad._id, { $inc: inc });
+			return;
+		}
+
+		// keep track of what the user has viewed, up view & unique view count
+		//var userViews = Meteor.users.findOne(this.userId);
+		// XXX
 	}
 });
 
@@ -101,20 +125,14 @@ WebApp.connectHandlers.use(function(req, res, next) {
 	if (host && host.length > 1)
 		host = host[1].split(':', 1)[0].toLowerCase().replace(/^www/, '');
 
-	// can't upsert with positional operators
-	if (PadStats.findOne(pad._id, { fields: { _id: 1 }}))
-		PadStats.update({
-			_id: pad._id,
-			siteCounts: {$elemMatch: { host: host }}
-		}, {
-			$inc: {
-				"siteCounts.$.count": 1
-			}
-		});
-	else
-		PadStats.insert( {_id: pad._id, siteCounts: [
-			{ host: host, count: 1 }
-		] });
+	PadStats.update({ id: pad._id, siteCounts: {$elemMatch: { host: host }} },
+		{ $inc: { "siteCounts.$.count": 1 } });
 
 	next();
+});
+
+// once off (can remove after next deploy)
+Pads.find().forEach(function(pad) {
+	if (!PadStats.findOne(pad._id))
+		PadStats.insert( {_id: pad._id, siteCounts: [] });
 });

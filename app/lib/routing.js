@@ -7,6 +7,9 @@ Router.configure({
 	layoutTemplate: 'layout'
 });
 
+if (Meteor.isClient)
+  Router.plugin('dataNotFound', {notFoundTemplate: 'notFound'});
+
 /*
 Router.route('/', {
 	action: function() {
@@ -50,9 +53,9 @@ PadController = RouteController.extend({
 			page: Pages.findOne({ padId:pad._id, pageNo:pageNo })
 		}
 	},
-	action: function() {
-		console.log(this.params);
-	},
+  onRun: function() {
+    Meteor.call('routeView', this.url.replace(/https?:\/\/[^\/+]\//, ''));
+  },
 	onAfterAction: function() {
 		var data = this.data();
 		if (!data.pad)
@@ -86,8 +89,9 @@ PadController = RouteController.extend({
 				}
 			}
 			updateEditor('tpl', content);
-		  tplEditor.syntaxMode = currentLang === 'spacebars'
-		  	? 'handlebars' : 'jade';
+      if (tplEditor)
+		    tplEditor.syntaxMode = currentLang === 'spacebars' ?
+          'handlebars' : 'jade';
 
 			updateEditor('code', page.code[Session.get('codeLang')]);
 
@@ -160,3 +164,7 @@ Router.route('/embed/:_id', function() {
 
   res.end(SSR.render('embed', data));
 }, { where: 'server' });
+
+if (Meteor.isServer) {
+  Router.route('/:username');
+}

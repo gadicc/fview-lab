@@ -39,6 +39,10 @@ if (Meteor.isServer) {
 	Pads.before.update(updatedAt);
 	Pages.before.insert(createdAt);
 	Pages.before.update(updatedAt);
+
+	Pads.after.insert(function(userId, pad) {
+		PadStats.insert( {_id: pad._id, siteCounts: [] });
+	});
 }
 
 if (Meteor.isServer) {
@@ -46,9 +50,11 @@ if (Meteor.isServer) {
 		check(limit, Number);
 		return Pads.find({owners: this.userId}, {limit:limit});
 	});
+
 	Meteor.publish('pad', function(id) {
 		return Pads.find(id, { limit: 1 });
 	});
+
 	Meteor.publish('page', function(padId, pageNo) {
 		check(padId, String);
 		check(pageNo, Number);
@@ -57,6 +63,7 @@ if (Meteor.isServer) {
 			$or: [ { pageNo: pageNo }, { pageNo: pageNo + 1 } ]
 		}, { limit: 2 });
 	});
+
 	Meteor.publish('padStats', function(id) {
 		check(id, String);
 		// aggregate not sopported in minimongo yet
@@ -64,6 +71,17 @@ if (Meteor.isServer) {
 		return PadStats.find({
 			_id: id,
 		}, { limit: 1} );
+	});
+
+	Meteor.publish('user', function(username) {
+		return Meteor.users.find({ username: username }, { fields: {
+			username: 1,
+			profile: 1
+		}});
+	});
+
+	Meteor.publish('userPads', function(userId) {
+		return Pads.find({owners:userId});
 	});
 
 	// Populate initial data
