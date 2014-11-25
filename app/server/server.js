@@ -55,6 +55,8 @@ Meteor.methods({
 	},
 
 	routeView: function(url) {
+		this.unblock();
+		
 		// track page views
 		// for logged in users, track viewed pads, maxpage, lastviewdate
 		check(url, String);

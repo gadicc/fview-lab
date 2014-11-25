@@ -14,8 +14,8 @@ accounts-twitter
 accounts-google
 gadicohen:accounts-merge
 
-#raix:famono
-mjn:famous
+raix:famono
+#mjn:famous
 gadicohen:famous-views
 
 iron:router

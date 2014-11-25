@@ -55,6 +55,7 @@ PadController = RouteController.extend({
 	},
   onRun: function() {
     Meteor.call('routeView', this.url.replace(/https?:\/\/[^\/+]\//, ''));
+    this.next();
   },
 	onAfterAction: function() {
 		var data = this.data();

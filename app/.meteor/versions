@@ -29,7 +29,7 @@ fastclick@1.0.1
 follower-livedata@1.0.2
 force-ssl@1.0.2
 gadicohen:accounts-merge@0.0.1
-gadicohen:famous-views@0.1.28
+gadicohen:famous-views@0.1.29
 gadicohen:jade-client@0.2.9_1
 gadicohen:prism@1.0.3
 gadicohen:snippets@0.0.4-pre.1
@@ -67,7 +67,6 @@ meteorhacks:subs-manager@1.2.1
 minifiers@1.1.2
 minimongo@1.0.5
 mizzao:bootstrap-3@3.3.1
-mjn:famous@0.3.1_2
 mobile-status-bar@1.0.1
 mongo@1.0.8
 mquandalle:jade@0.3.0
@@ -80,6 +79,7 @@ oauth@1.1.2
 observe-sequence@1.0.3
 ordered-dict@1.0.1
 pierreeric:cssc@1.0.4
+raix:famono@0.9.23
 random@1.0.1
 reactive-dict@1.0.4
 reactive-var@1.0.3

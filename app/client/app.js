@@ -3,12 +3,28 @@
 
 var isDevel = Injected.obj('env').NODE_ENV === 'development';
 
+// for flexiblelayout below, works around timing issues
+function flCheck() {
+  if (this.children.length === this._ratios.length)
+    this.view.setRatios(this._ratios);
+  else
+    flCheck.bind(this);
+}
+
 FView.ready(function() {
   famous.polyfills;
   famous.core.famous;
 
   FView.registerView('GridLayout', famous.views.GridLayout);
-  FView.registerView('FlexibleLayout', famous.views.FlexibleLayout);
+  FView.registerView('FlexibleLayout', famous.views.FlexibleLayout, {
+    // doesn't handle adding children after setting ratios
+    famousCreatedPost: function() {
+      var view = this.view;
+      this._ratios = view._ratios.get();
+      view.setRatios([]);
+      famous.core.Engine.nextTick(flCheck.bind(this));
+    }
+  });
 });
 
 iframe = null;
