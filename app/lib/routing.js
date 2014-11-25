@@ -3,19 +3,8 @@ subs = new SubsManager({
 	expireIn: 30
 });
 
-Router.configure({
-	layoutTemplate: 'layout'
-});
-
 if (Meteor.isClient)
   Router.plugin('dataNotFound', {notFoundTemplate: 'notFound'});
-
-/*
-Router.route('/', {
-	action: function() {
-	}
-});
-*/
 
 PadController = RouteController.extend({
   layoutTemplate: 'padLayout',
@@ -120,7 +109,7 @@ Router.route('/pads/:_id', {
 });
 
 Router.route('/', function() {
-	Router.go('padHome', {_id: 'intro' });
+	this.redirect('padHome', {_id: 'intro' });
 });
 
 if (Meteor.isServer) {
