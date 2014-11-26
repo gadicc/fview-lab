@@ -7,11 +7,6 @@ Template.padInfo.events({
 });
 
 Template.padInfo.helpers({
-	'embedCode': function() {
-		return '<iframe width="100%" height="400px" ' +
-			'src="https://fview-lab.meteor.com/embed/' + this.pad._id +
-		  '" frameborder="0"></iframe>';
-	},
 	'padStats': function() {
 		return PadStats.findOne(this.pad._id);
 	}

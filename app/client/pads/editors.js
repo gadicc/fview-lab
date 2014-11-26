@@ -245,7 +245,6 @@ var updateCode = function(event) {
             insertNoDupes(affectedTemplates,
               item.expression.left.object.property.name);
           } else {
-            console.log(1, item);
             affectedTemplates = ['__fvlBody']; break;
           }
         } else if (item.expression.type === 'CallExpression') {
@@ -257,7 +256,6 @@ var updateCode = function(event) {
             insertNoDupes(affectedTemplates,
               item.expression.callee.object.property.name);
           } else {
-            console.log(2, item);
             affectedTemplates = ['__fvlBody']; break;
           }
         } /* item.expression.type === 'CallExpression' */

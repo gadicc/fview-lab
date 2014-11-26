@@ -4,8 +4,6 @@ template(name="padInfo")
     input(type="text",id="slug")
     br
     span#link
-  p Embed code
-    input(type="text",id="embedCode",value="#{embedCode}")
   table#siteCounts
     tr
       th(colspan="2") Referring sites
@@ -15,6 +13,6 @@ template(name="padInfo")
     each padStats.siteCounts
       tr
         td
-          img(src="http://{{host}}/favicon.ico")
+          img(src="https://{{host}}/favicon.ico")
           | {{host}}
         td {{count}}

@@ -28,3 +28,11 @@ template(name="guide")
         button.btn(data-target='deletePage')
           | Delete this Page
           i.fa.fa-times
+    p
+      | By
+      a(href="/{{author.username}}") {{author.username}}
+    p
+      if shareit
+        +shareit shareit
+      if showEmbedCode
+        input(type="text",id="embedCode",value="#{embedCode}")

@@ -26,10 +26,10 @@ template(name="padHeader")
           span.title {{pad.title}}
         | #{pageHint}
       | &nbsp;&nbsp;
-      i#padInfoIcon.fa.fa-info-circle.fa-lg(class=padInfoActive)
-        div#whiteArrowUp
-      | &nbsp;
       if isOwner
+        i#padInfoIcon.fa.fa-info-circle.fa-lg(class=padInfoActive)
+          div#whiteArrowUp
+        | &nbsp;&nbsp;
         if isDirty
           button.btn.btn-success(data-action="save") Save (Ctrl-S)
         else

@@ -16,8 +16,29 @@ Template.guide.helpers({
   },
   nextPage: function() {
     return this.page && this.page.pageNo < this.pad.pages && (this.page.pageNo+1);
-  }
+  },
+	'embedCode': function() {
+		return '<iframe width="100%" height="400px" ' +
+			'src="https://fview-lab.meteor.com/embed/' + this.pad._id +
+		  '" frameborder="0"></iframe>';
+	},
+	'showEmbedCode': function() {
+		return showEmbedCode.get();
+	}
 });
+
+ShareIt.configure({
+  buttons: 'small'
+});
+
+var origShareItRendered = Template.shareit.rendered;
+Template.shareit.rendered = function() {
+	if (origShareItRendered)
+		origShareItRendered.apply(this, arguments);
+	var div = this.$('.share-buttons');
+	var a = $('<a id="showEmbedCode">Embed</a>');
+	div.append(a);
+};
 
 Template.guide.events({
 	'click button': function(event, tpl) {
@@ -58,5 +79,10 @@ Template.guide.events({
 		var action = event.currentTarget.getAttribute('data-action');
 		if (action == 'edit')
 			Session.set('editGuide', !Session.get('editGuide'));
+	},
+	'click #showEmbedCode': function(event, tpl) {
+		showEmbedCode.set(!showEmbedCode.get());
 	}
 });
+
+var showEmbedCode = new ReactiveVar();

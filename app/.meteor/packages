@@ -2,11 +2,13 @@ meteor-platform
 #autopublish
 #insecure
 
+# general core
 reactive-var
 reactive-dict
 spacebars-compiler
 force-ssl
 
+# accounts
 accounts-ui
 accounts-password
 accounts-github
@@ -14,10 +16,12 @@ accounts-twitter
 accounts-google
 gadicohen:accounts-merge
 
+# famo.us
 raix:famono
 #mjn:famous
 gadicohen:famous-views
 
+# atmosphere general
 iron:router
 npm-container
 mquandalle:jade
@@ -26,7 +30,9 @@ meteorhacks:subs-manager
 #meteorhacks:fast-render
 meteorhacks:inject-initial
 meteorhacks:ssr
+joshowens:shareit
 
+# layout
 mizzao:bootstrap-3
 #useraccounts:bootstrap
 chrismbeckett:fontawesome4
