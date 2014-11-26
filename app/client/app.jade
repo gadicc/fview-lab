@@ -10,6 +10,9 @@ template(name='layout')
         +yield
 
 template(name='padLayout')
+  div(style="display: none")
+    if shareit
+      +shareit shareit
   +famousContext id="mainCtx"
     +HeaderFooterLayout headerSize="50" footerSize="0"
       +Modifier target="header" translate="[0,0,1000]"

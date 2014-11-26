@@ -30,6 +30,7 @@ meteorhacks:subs-manager
 #meteorhacks:fast-render
 meteorhacks:inject-initial
 meteorhacks:ssr
+spiderable
 joshowens:shareit
 
 # layout

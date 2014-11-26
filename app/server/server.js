@@ -6,6 +6,10 @@ AccountsExtra.init({
 });
 
 Meteor.methods({
+	log: function(anything) {
+		console.log(anything);
+	},
+
 	fork: function(id) {
 		check(id, String);
 		var pad = Pads.findOne(id);

@@ -58,7 +58,7 @@ PadController = RouteController.extend({
     if (!pad)
       return {};
 
-    subs.subscribe('user', pad.owners[0]);
+    subs.subscribe('userById', pad.owners[0]);
     var author = Meteor.users.findOne(pad.owners[0]);
     var pageNo = parseInt(this.params.pageNo) || 1;
 
@@ -79,15 +79,16 @@ PadController = RouteController.extend({
     var page = Pages.findOne({ padId:pad._id, pageNo:pageNo });
 
     var shareit;
-    if (page && author)
+    if (page && author) {
       shareit = {
-        title: title + ' @ fview-lab',
+        title: title + ' by ' + author.username,
         author: function() { return author; },
         url: this.url.replace(/\/[0-9]*$/, ''),
         excerpt: page.guide ?
           marked(page.guide).match(/<p>(.*)<\/p>/)[1] :
           'FView Lab, Realtime Famo.us+Meteor Playground'
       };
+    }
 
     return {
       pad: pad,

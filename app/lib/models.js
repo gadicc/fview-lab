@@ -73,8 +73,14 @@ if (Meteor.isServer) {
 		}, { limit: 1} );
 	});
 
-	Meteor.publish('user', function(username) {
+	Meteor.publish('userByName', function(username) {
 		return Meteor.users.find({ username: username }, { fields: {
+			username: 1,
+			profile: 1
+		}});
+	});
+	Meteor.publish('userById', function(id) {
+		return Meteor.users.find(id, { fields: {
 			username: 1,
 			profile: 1
 		}});

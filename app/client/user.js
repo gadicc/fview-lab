@@ -2,7 +2,7 @@ UserController = RouteController.extend({
   layoutTemplate: 'layout',
   waitOn: function() {
     return [
-      subs.subscribe('user', this.params.username)
+      subs.subscribe('userByName', this.params.username)
     ];
   },
   data: function() {
