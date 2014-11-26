@@ -43,6 +43,16 @@ if (Meteor.isServer) {
 	Pads.after.insert(function(userId, pad) {
 		PadStats.insert( {_id: pad._id, siteCounts: [] });
 	});
+
+	Pages.before.update(function(userId, currentDoc, fieldNames, modifier) {
+		// relies on modifier set from updatedAt()
+		var query = 'url=https%3A%2F%2Ffview-lab.meteor.com%2Fpads%2F' +
+      currentDoc.padId + '&viewport=1200x750&unique=' + Date.now();
+    var token = md5(query + url2png.secret);
+		var url = 'http://api.url2png.com/v6/' +
+			url2png.api + '/' + token + '/png/?' + query;
+		modifier.$set.webshot = url;
+	});
 }
 
 if (Meteor.isServer) {

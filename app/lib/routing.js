@@ -86,7 +86,8 @@ PadController = RouteController.extend({
         url: this.url.replace(/\/[0-9]*$/, ''),
         excerpt: page.guide ?
           marked(page.guide).match(/<p>(.*)<\/p>/)[1] :
-          'FView Lab, Realtime Famo.us+Meteor Playground'
+          'FView Lab, Realtime Famo.us+Meteor Playground',
+        thumbnail: function() { return page.webshot }
       };
     }
 
