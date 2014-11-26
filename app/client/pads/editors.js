@@ -184,6 +184,25 @@ var updateCode = function(event) {
 
   content = content.replace(/Template.body/g, 'Template.__fvlBody');
 
+  switch(Session.get('codeLang')) {
+
+    case 'javascript':
+      break;
+
+    case 'coffee':
+      try {
+        content = CoffeeScript.compile(content);
+      } catch (error) {
+        Session.set('jsError', error.message);
+        return;
+      }
+      break;
+
+    default:
+      throw new Error("Don't know hot o ahndle " + Session.get('codeLang'));
+
+  }
+
   try {
     parsed = esprima.parse(content);
   } catch (error) {
