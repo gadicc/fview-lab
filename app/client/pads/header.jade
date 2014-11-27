@@ -2,6 +2,9 @@ template(name="padHeader")
   div#header
 
     div#headerRight
+      div(style="float: left")
+        a(target="_TOP",href="https://github.com/gadicc/fview-lab") Help
+        | &nbsp;
       if currentUser
         ul.nav.navbar-nav
           li.dropdown

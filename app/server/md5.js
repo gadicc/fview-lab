@@ -184,4 +184,5 @@ return (msw << 16) | (lsw & 0xFFFF);
 }
 
 // meteor/gadi
+// source: http://www.myersdaily.org/joseph/javascript/md5-text.html
 this.md5 = md5;

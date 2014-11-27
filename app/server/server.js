@@ -77,12 +77,20 @@ Meteor.methods({
 
 		var pageNo = url[3] || '1';
 
-		// if user isn't logged in, just up the view count
-		if (1 || !this.userId) {
-			var inc = {}; inc['pages.p'+pageNo+'.views'] = 1;
-			PadStats.update(pad._id, { $inc: inc });
-			return;
-		}
+		var query;
+
+		query = { $inc: {} };
+		query.$inc['pages.p'+pageNo+'.views'] = 1;
+		PadStats.update(pad._id, query);
+
+		// need a better way to do this since it's not stored sorted
+		// addToSet doesn't sort either
+		var ip = inet_aton(this.connection.clientAddress);
+		PadStats._collection.update(
+			{ _id: pad._id, ipList: { $ne: ip } },
+			{ $push: { ipList: ip }, $inc: { ipCount: 1 }	}
+		);
+
 
 		// keep track of what the user has viewed, up view & unique view count
 		//var userViews = Meteor.users.findOne(this.userId);

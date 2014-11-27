@@ -49,6 +49,7 @@
 			var pad = {{padJSON}};
 			var page = {{pageJSON}};
 			var templates = {{templatesJSON}};
+			var javascript = {{javascript}};
 			var iframeSrc = "http://localhost:6020";
 
 			var iframe;
@@ -61,6 +62,7 @@
 				iframe = document.getElementById('iframe');
 		    iframe.onload = function() {
 		    	post({type:'clear'});
+		    	post({type:'javascript', data: javascript});
 					for (var name in templates)
 						post({type:'template', name:name, compiled:templates[name]});
 		    };
