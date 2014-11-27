@@ -1,6 +1,4 @@
-if (Meteor.isServer) {
-  SSR.compileTemplate('embed', Assets.getText('embed.html'));
-}
+SSR.compileTemplate('embed', Assets.getText('embed.html'));
 
 var compileTemplates = function(lang, value) {
   var templates={};
@@ -21,6 +19,11 @@ var compileTemplates = function(lang, value) {
   return templates;
 }
 
+var isDevel = process.env.NODE_ENV === 'development';
+var iframeSrc = isDevel
+  ? 'http://localhost:6020'
+  : 'https://fview-lab-sandbox.meteor.com';
+
 Router.route('/embed/:_id', function() {
   var req = this.request;
   var res = this.response;
@@ -36,7 +39,8 @@ Router.route('/embed/:_id', function() {
     padJSON: JSON.stringify(pad),
     pageJSON: JSON.stringify(page),
     templatesJSON: JSON.stringify(templates),
-    javascript: JSON.stringify(page.code.javascript)
+    javascript: JSON.stringify(page.code.javascript),
+    iframeSrc: iframeSrc
   };
 
   res.end(SSR.render('embed', data));

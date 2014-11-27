@@ -45,14 +45,33 @@ if (Meteor.isServer) {
 	});
 
 	Pages.before.update(function(userId, currentDoc, fieldNames, modifier) {
-		// relies on modifier set from updatedAt()
+		// relies on modifier.$set existing from updatedAt()
 		var query = 'url=https%3A%2F%2Ffview-lab.meteor.com%2Fpads%2F' +
-      currentDoc.padId + '&viewport=1200x750&unique=' + Date.now();
+    	currentDoc.padId + '&viewport=1200x750&unique=' + Date.now();
     var token = md5(query + url2png.secret);
 		var url = 'http://api.url2png.com/v6/' +
 			url2png.api + '/' + token + '/png/?' + query;
 		modifier.$set.webshot = url;
 	});
+
+	Pages.after.update(function(userId, page, fieldNames, modifier) {
+		if (page.pageNo == 1) {
+			var excerpt = page.guide ?
+        marked(page.guide).match(/<p>(.*)<\/p>/)[1] :
+        'FView Lab, Realtime Famo.us+Meteor Playground';
+      var query = 'url=https%3A%2F%2Ffview-lab.meteor.com%2Fembed%2F' +
+      	page.padId + '&viewport=600x400&unique=' + Date.now() +
+      	'&thumbnail_max_width=400';
+	    var token = md5(query + url2png.secret);
+			var url = 'http://api.url2png.com/v6/' +
+				url2png.api + '/' + token + '/png/?' + query;
+			
+			Pads.update(page.padId, { $set: {
+				excerpt: excerpt,
+				webshot: url
+			}});
+		}
+	}, {fetchPrevious: false});
 }
 
 if (Meteor.isServer) {
@@ -80,7 +99,7 @@ if (Meteor.isServer) {
 		// TODO, aggregate directly with mongo and manually publish
 		return PadStats.find({
 			_id: id,
-		}, { limit: 1} );
+		}, { limit: 1, fields: { ipList: 0 } } );
 	});
 
 	Meteor.publish('userByName', function(username) {

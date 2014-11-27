@@ -4,6 +4,9 @@ template(name="padInfo")
     input(type="text",id="slug")
     br
     span#link
+  p Views: #{padStats.pages.p1.views}
+  p Unique IPs: #{padStats.ipCount}
+
   table#siteCounts
     tr
       th(colspan="2") Referring sites

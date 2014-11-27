@@ -6,7 +6,7 @@ template(name='layout')
     +HeaderFooterLayout headerSize="50" footerSize="0"
       +Surface target="header" translate="[0,0,1000]"
         +yield 'header'
-      +Surface target="content"
+      +Modifier target="content"
         +yield
 
 template(name='padLayout')

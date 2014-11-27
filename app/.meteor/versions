@@ -80,6 +80,7 @@ oauth@1.1.2
 observe-sequence@1.0.3
 ordered-dict@1.0.1
 pierreeric:cssc@1.0.4
+pierreeric:fview-flexgrid@0.1.0
 raix:famono@0.9.23
 random@1.0.1
 reactive-dict@1.0.4

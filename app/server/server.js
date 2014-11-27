@@ -84,7 +84,7 @@ Meteor.methods({
 		PadStats.update(pad._id, query);
 
 		// need a better way to do this since it's not stored sorted
-		// addToSet doesn't sort either
+		// addToSet doesn't sort either.  index i guess.
 		var ip = inet_aton(this.connection.clientAddress);
 		PadStats._collection.update(
 			{ _id: pad._id, ipList: { $ne: ip } },

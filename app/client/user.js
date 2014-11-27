@@ -32,4 +32,4 @@ Template.userHeader.helpers({
 	x: function() {
 		console.log(this);
 	}
-})
+});

@@ -7,7 +7,12 @@ template(name='userHeader')
       p {{x}}
 
 template(name='userHome')
-  ul
+  +Surface class="userSurface" target="content"
+    p
+  +FlexGrid itemSize="[350,155]" marginTop=70 marinSide=20 gutterCol=20 gutterRow=20
     each pads
-      li
-        a(href="/pads/#{_id}") #{title}
+      +Surface class="padCard"
+        a(href="/pads/#{_id}")
+          h1 #{title}
+          img(src="#{webshot}")
+          p #{excerpt}
