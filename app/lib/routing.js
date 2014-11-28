@@ -82,7 +82,7 @@ PadController = RouteController.extend({
     if (page && author) {
       // code duped in models.js
       var match = page.guide && marked(page.guide).match(/<p>(.*)<\/p>/);
-      var excerpt = page.guide && match[1] ? match[1] :
+      var excerpt = page.guide && match ? match[1] :
 
         'FView Lab, Realtime Famo.us+Meteor Playground';
       shareit = {

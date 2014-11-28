@@ -58,7 +58,7 @@ if (Meteor.isServer) {
 		if (page.pageNo == 1) {
 			// code duped in routing.js
       var match = page.guide && marked(page.guide).match(/<p>(.*)<\/p>/);
-      var excerpt = page.guide && match[1] ? match[1] :
+      var excerpt = page.guide && match ? match[1] :
         'FView Lab, Realtime Famo.us+Meteor Playground';
 
       var query = 'url=https%3A%2F%2Ffview-lab.meteor.com%2Fembed%2F' +
