@@ -80,13 +80,16 @@ PadController = RouteController.extend({
 
     var shareit;
     if (page && author) {
+      // code duped in models.js
+      var match = page.guide && marked(page.guide).match(/<p>(.*)<\/p>/);
+      var excerpt = page.guide && match[1] ? match[1] :
+
+        'FView Lab, Realtime Famo.us+Meteor Playground';
       shareit = {
         title: title + ' by ' + author.username,
         author: function() { return author; },
         url: this.url.replace(/\/[0-9]*$/, ''),
-        excerpt: page.guide ?
-          marked(page.guide).match(/<p>(.*)<\/p>/)[1] :
-          'FView Lab, Realtime Famo.us+Meteor Playground',
+        excerpt: excerpt,
         thumbnail: function() { return page.webshot }
       };
     }

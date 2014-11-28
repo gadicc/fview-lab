@@ -28,8 +28,8 @@ Router.route('/embed/:_id', function() {
   var req = this.request;
   var res = this.response;
 
-  var pad = Pads.findOne('intro');
-  var page = Pages.findOne({padId: 'intro', pageNo: 1});
+  var pad = Pads.findOne(this.params._id);
+  var page = Pages.findOne({padId: this.params._id, pageNo: 1});
 
   var templates = compileTemplates('spacebars', page.templates.spacebars);
 
