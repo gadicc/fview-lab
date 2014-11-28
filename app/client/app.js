@@ -34,23 +34,22 @@ var iframeSrc = isDevel
 
 var postQueue = [];
 post = function(data) {
-  postQueue.push(data);
+  if (iframe && iframe.contentWindow && iframe.loaded)
+    iframe.contentWindow.postMessage('fview-lab ' +
+      JSON.stringify(data), iframeSrc);
+  else
+    postQueue.push(data);
 }
 
 Template.iframe.rendered = function() {
   iframe = this.find('#iframe');
   iframe.onload = function() {
-    post = function(data) {
-      iframe.contentWindow.postMessage(
-        'fview-lab ' + JSON.stringify(data), iframeSrc);
-    };
-
+    iframe.loaded = true;
     for (var i=0; i < postQueue.length; i++)
       post(postQueue[i]);
-    delete(postQueue);
+    postQueue = [];
   };
   iframe.src = iframeSrc;
-  //console.log(iframe);
 }
 
 sandbox = new ReactiveDict();
@@ -70,7 +69,11 @@ function receiveMessage(event) {
 
   if (data.type=='setVar')
     sandbox.set(data.name, data.value);
-  else
+  else if (data.type=='cheese') {
+    var div = document.createElement('div');
+    div.id = 'url2png-cheese';
+    document.body.appendChild(div);
+  } else
     console.log('Unknown ', data);
 }
 

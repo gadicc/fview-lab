@@ -40,6 +40,7 @@ Router.route('/embed/:_id', function() {
     pageJSON: JSON.stringify(page),
     templatesJSON: JSON.stringify(templates),
     javascript: JSON.stringify(page.code.javascript),
+    css: JSON.stringify(page.style.css),
     iframeSrc: iframeSrc
   };
 

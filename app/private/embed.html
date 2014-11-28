@@ -51,6 +51,7 @@
 			var templates = {{templatesJSON}};
 			var javascript = {{javascript}};
 			var iframeSrc = "{{iframeSrc}}";
+			var css = {{css}};
 
 			var iframe;
 	    post = function(data) {
@@ -58,11 +59,35 @@
 	        'fview-lab ' + JSON.stringify(data), iframeSrc);
 	    };
 
+			function receiveMessage(event) {
+			  if (event.origin !== iframeSrc || event.data.substr(0,10) !== 'fview-lab ') {
+			    console.log('ignore', event);
+			    return;
+			  }
+
+			  var data = JSON.parse(event.data.substr(10));  // strip "fview-lab "
+
+			  if (data.type=='cheese') {
+			    var div = document.createElement('div');
+			    div.id = 'url2png-cheese';
+			    document.body.appendChild(div);
+			  } else
+			    console.log('Unknown ', data);
+			}
+
+			if (window.addEventListener)
+			  window.addEventListener('message', receiveMessage, false);
+			else if (window.attachEvent)
+			  window.attachEvent('onmessage', receiveMessage, false);
+			else
+			  alert("Not sure what browser you're using but we can't use it, sorry.");
+
 			window.onload = function() {
 				iframe = document.getElementById('iframe');
 		    iframe.onload = function() {
 		    	post({type:'clear'});
 		    	post({type:'javascript', data: javascript});
+		    	post({type:'css', data: css});
 					for (var name in templates)
 						post({type:'template', name:name, compiled:templates[name]});
 		    };

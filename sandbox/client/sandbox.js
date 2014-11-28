@@ -155,6 +155,13 @@ styleEl = null;
 Meteor.startup(function() {
   styleEl = document.createElement('style');
   document.body.appendChild(styleEl);
+
+  // We can do better!
+  $(document).ready(function() {
+    window.setTimeout(function() {
+      post({ type: 'cheese' });
+    }, 2000);
+  });
 });
 
 Template.registerHelper('dstache', function() {

@@ -44,9 +44,13 @@ var prepareContent = function(which, page) {
   return content;
 }
 
+var lastPage = {};
+var lastContent = {};
 PadController = RouteController.extend({
   layoutTemplate: 'padLayout',
   waitOn: function () {
+    lastPage = {};
+    lastContent = {};
     return [
       subs.subscribe('pad', this.params._id),
       subs.subscribe('page', this.params._id,
@@ -112,16 +116,27 @@ PadController = RouteController.extend({
 
     subs.subscribe('padStats', data.pad._id);
 
-    var page = data.page;
+    var page = data.page, content;
     if (page) {
-      post({ type:'clear' }); codes=[]; templates={};
+      if (page._id != lastPage._id) {
+        post({ type:'clear' }); codes=[]; templates={};
+      }
 
-      updateEditor('tpl', prepareContent('tpl', page));
-      updateEditor('code', prepareContent('code', page));
-      updateEditor('style', page.style && page.style.css);
+      content = prepareContent('tpl', page);
+      if (content !== lastContent.tpl)
+        updateEditor('tpl', lastContent.tpl = content);
 
-      if (!Tracker.nonreactive(function() { return Session.get('guideContent'); }))
+      content = prepareContent('code', page);
+      if (content !== lastContent.code)
+        updateEditor('code', lastContent.code = content);
+
+      if (page.style && page.style.css != (lastPage.style && lastPage.style.css))
+        updateEditor('style', page.style.css);
+
+      if (page.guide !== lastPage.guide &&
+          !Tracker.nonreactive(function() { return Session.get('guideContent'); }))
         updateEditor('guide', page.guide);
+      lastPage = page;
     }
   },
   yieldRegions: {
