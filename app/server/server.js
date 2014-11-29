@@ -10,7 +10,7 @@ Meteor.methods({
 		console.log(anything);
 	},
 
-	fork: function(id) {
+	fork: function(id, pageNo, dirtyContent) {
 		check(id, String);
 		var pad = Pads.findOne(id);
 		if (!pad)
@@ -31,6 +31,19 @@ Meteor.methods({
 		_.each(pages, function(page) {
 			delete(page._id);
 			page.padId = id;
+
+			if (page.pageNo == pageNo) {
+				for (var key in dirtyContent) {
+					var parts = key.split('.');
+					if (parts.length == 1)
+						page[key] = dirtyContent[key];
+					else if (parts.length == 2)
+						page[parts[0]][parts[1]] = dirtyContent[key];
+					else
+						throw new Error("Can't handle multiple dots in dirty fork update");
+				}
+			}
+
 			Pages.insert(page);
 		});
 

@@ -38,7 +38,11 @@ template(name="padHeader")
         else
           button.btn(disabled) ּSaved
       if currentUser
-        button.btn.btn-primary(data-action="fork") Fork
+        button.btn.btn-primary(data-action="fork")
+          | Fork
+          if isDirty
+            | and Save
+
       else
         | Log in to Fork/Save
 

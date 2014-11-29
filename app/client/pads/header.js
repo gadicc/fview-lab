@@ -33,15 +33,17 @@ Template.padHeader.events({
     $btn.attr('disabled', true);
     $btn.html('Forking...');
 
-    Meteor.call('fork', this.pad._id, function(error, padId) {
-      if (error)
-        alert(error);
-      else {
-        $btn.attr('disabled', false);
-        $btn.html('Fork');
-        Router.go('padHome', {_id: padId });
+    Meteor.call('fork', this.pad._id, this.page.pageNo, dirtyContent(),
+      function(error, padId) {
+        if (error)
+          alert(error);
+        else {
+          $btn.attr('disabled', false);
+          $btn.html('Fork');
+          Router.go('padHome', {_id: padId });
+        }
       }
-    });
+    );
   },
   'click a.pads': function(event, tpl) {
     if (!navigateWithUnsavedWork()) {
@@ -91,13 +93,8 @@ $(window).bind('keydown', function(event) {
   }
 });
 
-save = function() {
-  var data = Router.current().data();
-  if (!userOwnsPad(Meteor.userId(), data.pad)) {
-    alert("Can't save a pad you don't own!");
-    return;
-  }
-
+// used by save and fork
+var dirtyContent = function() {
   var update = {};
   var content;
 
@@ -121,6 +118,16 @@ save = function() {
     Session.set('guideDirty', false);
   }
 
-  Pages.update(data.page._id, { $set: update });
+  return update;
+};
+
+var save = function() {
+  var data = Router.current().data();
+  if (!userOwnsPad(Meteor.userId(), data.pad)) {
+    alert("Can't save a pad you don't own!");
+    return;
+  }
+
+  Pages.update(data.page._id, { $set: dirtyContent() });
   Session.set('isDirty', false);
 };
