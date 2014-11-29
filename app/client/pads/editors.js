@@ -59,6 +59,9 @@ Template.editGuideTpl.rendered = function() {
 }
 
 codeEditor = null, tplEditor = null, styleEditor = null;
+var codeComplete = _.debounce(function() {
+  codeEditor._editor.execCommand("startAutocomplete")
+}, 750);
 Template.editors.rendered = function() {
   tplEditor = new ReactiveAce();
   tplEditor.attach(this.find('#tplEditor'));
@@ -69,6 +72,17 @@ Template.editors.rendered = function() {
   codeEditor.theme = "monokai";
   codeEditor.syntaxMode = Session.get('codeLang');
   codeEditor.parseEnabled = true;
+
+  codeEditor._editor.setOptions({
+    enableBasicAutocompletion: true,
+    enableSnippets: true,
+    enableLiveAutocompletion: false
+  });
+  codeEditor._editor.commands.on("afterExec", function(e){ 
+    if (e.command.name == "insertstring"&&/^[\w.]$/.test(e.args)) { 
+      codeComplete(); 
+    } 
+  });
 
   styleEditor = new ReactiveAce();
   styleEditor.attach(this.find('#styleEditor'));
@@ -111,8 +125,7 @@ updateEditor = function(which, content) {
     useThisValue = content;
     editor._editor.setValue(content, -1);
     useThisValue = false;
-  }
-  else
+  } else
     editorQueue[which] = content;
 };
 

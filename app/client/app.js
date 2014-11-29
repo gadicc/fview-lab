@@ -27,7 +27,7 @@ FView.ready(function() {
   });
 });
 
-iframe = null;
+iframe = null, $iframe = null;
 var iframeSrc = isDevel
   ? 'http://localhost:6020'
   : 'https://fview-lab-sandbox.meteor.com';
@@ -46,11 +46,17 @@ Template.iframe.rendered = function() {
   iframe = $iframe[0];  // used globally!
 
   iframe.onload = function() {
-    /*
-    var size = FView.byId('iframe').surface.getSize();
+    // work around Apple completely screwing up how HTML works
+    var surface = FView.byId('iframe').surface;
+    var size = surface.getSize();
     $iframe.width(size[0]);
     $iframe.height(size[1]);
-    */
+
+    surface.on('resize', function() {
+      var size = surface.getSize();
+      $iframe.width(size[0]);
+      $iframe.height(size[1]);
+    });
 
     iframe.loaded = true;
     for (var i=0; i < postQueue.length; i++)
@@ -115,14 +121,19 @@ Template.xedit.rendered = function() {
 var hashSeed = '0xABCD';
 hash = function(input) {
   return XXH(input, hashSeed).toString(16);
-}
+};
 
 // could keep sorted to optimize :)
 insertNoDupes = function(array, value) {
   if (array.indexOf(value) === -1)
     array.push(value);
-}
+};
 
 Template.padLayout.overlay = function() {
   return Session.get('overlay');
-}
+};
+
+var acePath = '/packages/dcsan_reactive-ace/vendor/ace/src/';
+$.getScript(acePath + 'ext-language_tools.js', function() {
+  ace.require("ace/ext/language_tools");
+});
