@@ -44,12 +44,14 @@ Template.padHeader.events({
     });
   },
   'click a.pads': function(event, tpl) {
+    if (!navigateWithUnsavedWork()) {
+      event.preventDefault();
+      return;
+    }
+
     var action = event.currentTarget.getAttribute('data-action');
     switch(action) {
       case 'new':
-        if (Session.get('isDirty'))
-          if (!confirm('Unsaved work will be lost.  Are you sure?'))
-            return;
         var padId = Pads.insert({
           title: 'Unnamed Pad',
           owners: [ Meteor.userId() ],
@@ -97,14 +99,26 @@ save = function() {
   }
 
   var update = {};
-  update['templates.'+Session.get('tplLang')] = tplEditor._editor.getValue();
-  update['code.'+Session.get('codeLang')] = codeEditor._editor.getValue();
-  update['style.css'] = styleEditor._editor.getValue();
+  var content;
 
-  var guideContent = Session.get('guideContent');
-  if (guideContent) {
-    update.guide = guideContent;
-    Session.set('guideContent', null);
+  if (content = Session.get('tplDirty')) {
+    update['templates.'+Session.get('tplLang')] = content;
+    Session.set('tplDirty', false);
+  }
+
+  if (content = Session.get('codeDirty')) {
+    update['code.'+Session.get('codeLang')] = content;
+    Session.set('codeDirty', false);
+  }
+
+  if (content = Session.get('styleDirty')) {
+    update['style.css'] = content;
+    Session.set('styleDirty', false);
+  }
+
+  if (content = Session.get('guideDirty')) {
+    update.guide = content;
+    Session.set('guideDirty', false);
   }
 
   Pages.update(data.page._id, { $set: update });

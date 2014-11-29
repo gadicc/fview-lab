@@ -40,7 +40,7 @@ Template.editGuideTpl.rendered = function() {
   guideEditor._editor.getSession().on('change', updateGuide);
 
   var content;
-  if (content = Session.get('guideContent'))
+  if (content = Session.get('guideDirty'))
     updateEditor('guide', content);
   else if (editorQueue.guide)
     updateEditor('guide', editorQueue.guide);
@@ -106,6 +106,20 @@ updateEditor = function(which, content) {
     editorQueue[which] = content;
 };
 
+// TODO move to view
+Session.setDefault('tplDirty', false);
+Session.setDefault('codeDirty', false);
+Session.setDefault('styleDirty', false);
+Session.setDefault('guideDirty', false);
+Tracker.autorun(function() {
+  // We use Session.equals to trigger reactive change only on false/non-false,
+  // since we store the entire dirty contents in the Session var
+  Session.set('isDirty', !(
+    Session.equals('tplDirty', false) && Session.equals('codeDirty', false) &&
+    Session.equals('styleDirty', false) && Session.equals('guideDirty', false)
+  ));
+});
+
 /*
  * Called on every template editor update.
  * Go through each template and see what's changed, post to sandbox
@@ -115,8 +129,8 @@ var updateTemplates = function(event) {
   // Weird ace bug?  getValue() returns old value, let's only use for user update
   var value = useThisValue === false ? tplEditor._editor.getValue() : useThisValue;
 
-  if (!useThisValue && !Session.get('isDirty'))
-    Session.set('isDirty', true);
+  if (!useThisValue)
+    Session.set('tplDirty', value === lastContent.tpl ? false : value);
 
   switch(Session.get('tplLang')) {
 
@@ -179,8 +193,8 @@ var updateCode = function(event) {
   var content = useThisValue === false ? codeEditor._editor.getValue() : useThisValue;
   var parsed;
 
-  if (!useThisValue && !Session.get('isDirty'))
-    Session.set('isDirty', true);
+  if (!useThisValue)
+    Session.set('codeDirty', content === lastContent.code ? false : content);
 
   content = content.replace(/Template.body/g, 'Template.__fvlBody');
 
@@ -278,8 +292,8 @@ var updateStyle = function(event) {
   // Weird ace bug?  getValue() returns old value, let's only use for user update
   var content = useThisValue === false ? styleEditor._editor.getValue() : useThisValue;
 
-  if (!useThisValue && !Session.get('isDirty'))
-    Session.set('isDirty', true);
+  if (!useThisValue)
+    Session.set('styleDirty', content === lastContent.style ? false : content);
 
   post({ type: 'css', data: content });
 };
@@ -287,9 +301,15 @@ var updateStyle = function(event) {
 var updateGuide = function(event) {
   // Weird ace bug?  getValue() returns old value, let's only use for user update
   var content = useThisValue === false ? guideEditor._editor.getValue() : useThisValue;
-  if (!useThisValue) {
-    if (!Session.get('isDirty'))
-      Session.set('isDirty', true);
-    Session.set('guideContent', content);
-  }
+
+  if (!useThisValue)
+    Session.set('guideDirty', content === lastContent.guide ? false : content);
+};
+
+// should be used on any event that will navigate away and destroy template
+navigateWithUnsavedWork = function() {
+  if (Session.get('isDirty'))
+    return confirm('Unsaved work will be lost.  Are you sure?');
+  else
+    return true;
 };

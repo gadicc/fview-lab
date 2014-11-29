@@ -46,9 +46,11 @@ Template.iframe.rendered = function() {
   iframe = $iframe[0];  // used globally!
 
   iframe.onload = function() {
+    /*
     var size = FView.byId('iframe').surface.getSize();
     $iframe.width(size[0]);
     $iframe.height(size[1]);
+    */
 
     iframe.loaded = true;
     for (var i=0; i < postQueue.length; i++)

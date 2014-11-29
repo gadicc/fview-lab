@@ -4,7 +4,7 @@ Template.registerHelper('isOwner', function() {
 
 Template.guide.helpers({
 	guideContent: function() {
-		return Session.get('guideContent') || (this.page && this.page.guide)
+		return Session.get('guideDirty') || (this.page && this.page.guide)
 			|| 'This page has no guide.';
 	},
 	multiplePagesOrOwner: function() {
@@ -44,6 +44,9 @@ Template.guide.events({
 	'click button': function(event, tpl) {
 		var target = event.currentTarget.getAttribute('data-target');
 
+    if (target !== 'deletePage' && !navigateWithUnsavedWork()) 
+      return;
+
 		switch(target) {
 			case 'createNext':
 				/* no break, continue to "next" */
@@ -82,6 +85,10 @@ Template.guide.events({
 	},
 	'click #showEmbedCode': function(event, tpl) {
 		showEmbedCode.set(!showEmbedCode.get());
+	},
+	'click a': function(event, tpl) {
+    if (!navigateWithUnsavedWork()) 
+			event.preventDefault();
 	}
 });
 

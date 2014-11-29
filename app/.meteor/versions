@@ -49,7 +49,7 @@ iron:middleware-stack@1.0.3
 iron:router@1.0.3
 iron:url@1.0.3
 jag:pince@0.0.5
-joshowens:shareit@0.2.1-pre.1
+joshowens:shareit@0.2.1
 jquery@1.0.1
 json@1.0.1
 launch-screen@1.0.0

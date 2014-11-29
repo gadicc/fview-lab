@@ -35,7 +35,7 @@ template(name="result")
         div(class="jsError",title="Error: #{sandbox.jsError}") x
 
 template(name="iframe")
-  iframe#iframe(sandbox="allow-scripts allow-same-origin")
+  iframe#iframe(sandbox="allow-scripts allow-same-origin",scrolling="no")
 
 template(name="notFound")
   h1 404 - Not Found

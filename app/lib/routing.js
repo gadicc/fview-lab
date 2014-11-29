@@ -44,8 +44,10 @@ var prepareContent = function(which, page) {
   return content;
 }
 
-var lastPage = {};
-var lastContent = {};
+// globals, since in editor.js we check to see if edit is really dirty
+lastPage = {};
+lastContent = {};
+
 PadController = RouteController.extend({
   layoutTemplate: 'padLayout',
   waitOn: function () {
@@ -72,12 +74,6 @@ PadController = RouteController.extend({
 
     Session.set('title', title)
     window.title = title + ' - fview-lab';
-
-    var guideContent = Tracker.nonreactive(function() { return Session.get('guideContent'); });
-    if (!guideContent || Session.get('pageNo') !== pageNo) {
-      Session.set('isDirty', false);
-      Session.set('guideContent', null);
-    }
 
     Session.set('pageNo', pageNo);
     var page = Pages.findOne({ padId:pad._id, pageNo:pageNo });
@@ -130,14 +126,26 @@ PadController = RouteController.extend({
       if (content !== lastContent.code)
         updateEditor('code', lastContent.code = content);
 
-      if (page.style && page.style.css != (lastPage.style && lastPage.style.css))
-        updateEditor('style', page.style.css);
+      if (page.style && page.style.css != (lastPage.style && lastPage.style.css)) {
+        if (page.style.css !== lastContent.style)
+          updateEditor('style', page.style.css);
+      }
 
       if (page.guide !== lastPage.guide &&
-          !Tracker.nonreactive(function() { return Session.get('guideContent'); }))
+          !Tracker.nonreactive(function() { return Session.get('guideDirty'); }))
         updateEditor('guide', page.guide);
+      
       lastPage = page;
     }
+  },
+  onStop: function() {
+    // this will happen after user has agreed to relinguish unsaved changes
+    // so now we should clear them
+    Session.set('isDirty', false);
+    Session.setDefault('tplDirty', false);
+    Session.setDefault('codeDirty', false);
+    Session.setDefault('styleDirty', false);
+    Session.setDefault('guideDirty', false);
   },
   yieldRegions: {
     'guide': { to: 'guide' },
