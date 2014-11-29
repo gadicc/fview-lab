@@ -48,6 +48,12 @@ var prepareContent = function(which, page) {
 lastPage = {};
 lastContent = {};
 
+if (Meteor.isClient)
+  if (!Session.getNR)
+    Session.getNR = function(name) {
+      return Tracker.nonreactive(function() { return Session.get(name); });
+    }
+
 PadController = RouteController.extend({
   layoutTemplate: 'padLayout',
   waitOn: function () {
@@ -118,34 +124,24 @@ PadController = RouteController.extend({
         post({ type:'clear' }); codes=[]; templates={};
       }
 
-      content = prepareContent('tpl', page);
+      content = Session.getNR('tplDirty') || prepareContent('tpl', page);
       if (content !== lastContent.tpl)
         updateEditor('tpl', lastContent.tpl = content);
 
-      content = prepareContent('code', page);
+      content = Session.getNR('codeDirty') || prepareContent('code', page);
       if (content !== lastContent.code)
         updateEditor('code', lastContent.code = content);
 
-      if (page.style && page.style.css != (lastPage.style && lastPage.style.css)) {
-        if (page.style.css !== lastContent.style)
-          updateEditor('style', page.style.css);
-      }
+      content = Session.getNR('styleDirty') || page.style && page.style.css;
+      if (content !== lastContent.style)
+        updateEditor('style', lastContent.style = page.style.css);
 
-      if (page.guide !== lastPage.guide &&
-          !Tracker.nonreactive(function() { return Session.get('guideDirty'); }))
-        updateEditor('guide', page.guide);
-      
+      content = Session.getNR('guideDirty') || page.guide;
+      if (page.guide !== lastContent.guide)
+        updateEditor('guide', lastContent.guide = page.guide);
+
       lastPage = page;
     }
-  },
-  onStop: function() {
-    // this will happen after user has agreed to relinguish unsaved changes
-    // so now we should clear them
-    Session.set('isDirty', false);
-    Session.setDefault('tplDirty', false);
-    Session.setDefault('codeDirty', false);
-    Session.setDefault('styleDirty', false);
-    Session.setDefault('guideDirty', false);
   },
   yieldRegions: {
     'guide': { to: 'guide' },

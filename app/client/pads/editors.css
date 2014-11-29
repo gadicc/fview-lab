@@ -36,3 +36,5 @@
 #editorPane .editorError {
 	text-shadow: 0 0 5px #800;
 }
+
+.unsaved { color: #955;}

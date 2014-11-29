@@ -5,9 +5,13 @@ Session.setDefault('tplLang', 'spacebars');
 
 Template.editors.events({
   'click a': function(event, tpl) {
+    event.preventDefault();
+    if (!navigateWithUnsavedWork())
+      return;
     var type = event.target.getAttribute('data-type');
     var newLang = event.target.getAttribute('data-value');
     Session.set(type+'Lang', newLang);
+    Session.set(type+'Dirty', false);
   }
 });
 
@@ -18,7 +22,8 @@ Template.editors.helpers({
     return Session.equals(type+'Lang', lang) ? 'selected' : '';
   },
   tplError: function() { return Session.get('tplError'); },
-  jsError: function() { return Session.get('jsError'); }
+  jsError: function() { return Session.get('jsError'); },
+  isDirty: function(what) { return Session.get(what+'Dirty'); }
 });
 
 guideEditor = null;
@@ -308,8 +313,16 @@ var updateGuide = function(event) {
 
 // should be used on any event that will navigate away and destroy template
 navigateWithUnsavedWork = function() {
-  if (Session.get('isDirty'))
-    return confirm('Unsaved work will be lost.  Are you sure?');
-  else
+  if (Session.get('isDirty')) {
+    var a = confirm('Unsaved work will be lost.  Are you sure?');
+    if (a) {
+      Session.set('isDirty', false);
+      Session.set('tplDirty', false);
+      Session.set('codeDirty', false);
+      Session.set('styleDirty', false);
+      Session.set('guideDirty', false);
+    }
+    return a;
+  } else
     return true;
 };

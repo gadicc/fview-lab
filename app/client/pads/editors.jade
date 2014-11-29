@@ -17,6 +17,9 @@ template(name="editors")
       else
         span(class="editorSuccess") 
           i.fa.fa-fw.fa-check
+      if isDirty 'tpl'
+        span(class="unsaved",title="Unsaved Changes")
+          i.fa.fa-save
     div#tplEditor.editor
     div.footer
     div.header
@@ -30,6 +33,9 @@ template(name="editors")
       else
         span(class="editorSuccess") 
           i.fa.fa-fw.fa-check
+      if isDirty 'code'
+        span(class="unsaved",title="Unsaved Changes")
+          i.fa.fa-save
     div#codeEditor.editor
     div.footer
     div.header
