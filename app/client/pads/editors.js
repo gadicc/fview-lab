@@ -22,7 +22,12 @@ Template.editors.helpers({
     return Session.equals(type+'Lang', lang) ? 'selected' : '';
   },
   tplError: function() { return Session.get('tplError'); },
-  jsError: function() { return Session.get('jsError'); },
+  jsError: function() {
+    var e;
+    return Session.get('jsError') || (
+      (e = sandbox.get('jsError')) ? e.message+'\n'+e.stack.join('\n') : null
+    );
+  },
   isDirty: function(what) { return Session.get(what+'Dirty'); }
 });
 

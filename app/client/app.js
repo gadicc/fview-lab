@@ -63,7 +63,10 @@ Template.iframe.rendered = function() {
 sandbox = new ReactiveDict();
 Template.result.helpers({
   sandbox: {
-    jsError: function() { return sandbox.get('jsError'); }
+    jsError: function() {
+      var error = sandbox.get('jsError');
+      return error ? error.message+'\n'+error.stack.join('\n') : null;
+    }
   }
 });
 

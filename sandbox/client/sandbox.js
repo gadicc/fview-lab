@@ -2,6 +2,9 @@ var isDevel = Injected.obj('env').NODE_ENV === 'development';
 var parentOrigin = isDevel
   ? 'http://localhost:6010'
   : 'https://fview-lab.meteor.com';
+var myOrigin = isDevel
+  ? 'http://localhost:6020'
+  : 'https://fview-lab-sandbox.meteor.com';
 
 Template.body.helpers({
   reactiveBody: function() {
@@ -89,16 +92,9 @@ receiveHandlers.template = function(data) {
   tpl.dep.changed();
 
   /*
-   * This was here to make sure Templates ran first, e.g. <template name="x">
-   * before Template.x.something happened.  But this required a body to exist
-   * for any code to be run, which maybe isn't what we wanted.  We'd like in
-   * the future to cover a case where, Template.x.something breaks because
-   * the template exists, but then that template is created.  XXX On change we
-   * should try rerun everything if there were errors? XXX
+   * If we have an existing jsError, maybe it's because there were missing
+   * template components.  Try rerun the code in case it works now
    */
-  //if (/* templates.__fvlBody && */ !readies.get('FVLbody'))
-  //  readies.set('FVLbody', true);
-
   if (jsError)
     receiveHandlers.javascript(lastCode);
 };
@@ -109,21 +105,67 @@ receiveHandlers.affectedTemplates = function(data) {
       templates[data[i]].dep.changed();
 };
 
+
+var myOriginRE = new RegExp(myOrigin);
+window.onerror = function(message, url, line, col, error) {
+  jsError = true;
+  // console.log('onerror', arguments);
+
+  var match, stack = printStackTrace({e: error});
+
+  if (stack && stack.length) {
+    for (var i=0; i < stack.length; i++)
+      stack[i] = stack[i]
+        .replace(myOriginRE, '')
+        .replace(/\.js\?[0-9a-f]+:/, '.js:');
+  }
+
+  // get line&col from stack trace if not provided by browser
+  if (!line && stack && stack.length
+      && (match = stack[0].match(/:([0-9]+):([0-9]+)$/))) {
+    line = match[1];
+    col = match[2];
+  }
+
+  post({type:'setVar', name:'jsError', value: {
+    message: message,
+    url: url,
+    line: line,
+    col: col,
+    stack: stack
+  }});
+
+  return false;
+};
+
+Blaze._wrapCatchingExceptions = function (f, where) {
+  if (typeof f !== 'function')
+    return f;
+
+  return function () {
+    try {
+      return f.apply(this, arguments);
+    } catch (e) {
+      window.onerror(e.message, undefined, undefined, undefined, e);
+      Blaze._reportException(e, 'Exception in ' + where + ':');
+    }
+  };
+};
+
 var lastCode = null, jsError = false;
 receiveHandlers.javascript = function(code) {
   // in case we fail, we might try this again later
   lastCode = code;
 
-  try {
-    eval(code);
-  } catch (error) {
-    jsError = true;
-    post({type:'setVar', name:'jsError', value:error.message});
-    // console.log(error);
-    return;
-  }
   jsError = false;
-  post({type:'setVar', name:'jsError', value:false});
+  var script = document.createElement('script');
+  script.appendChild(document.createTextNode(code));
+  document.body.appendChild(script);
+  document.body.removeChild(script);
+
+  // could be set in window.onerror
+  if (jsError == false)
+    post({type:'setVar', name:'jsError', value:false});
 };
 
 globalKeys = [];
