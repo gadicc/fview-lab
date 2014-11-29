@@ -139,7 +139,7 @@ var updateTemplates = function(event) {
   // Weird ace bug?  getValue() returns old value, let's only use for user update
   var value = useThisValue === false ? tplEditor._editor.getValue() : useThisValue;
 
-  if (!useThisValue)
+  if (useThisValue === false)
     Session.set('tplDirty', value === lastContent.tpl ? false : value);
 
   switch(Session.get('tplLang')) {
@@ -203,7 +203,7 @@ var updateCode = function(event) {
   var content = useThisValue === false ? codeEditor._editor.getValue() : useThisValue;
   var parsed;
 
-  if (!useThisValue)
+  if (useThisValue === false)
     Session.set('codeDirty', content === lastContent.code ? false : content);
 
   content = content.replace(/Template.body/g, 'Template.__fvlBody');
@@ -302,7 +302,7 @@ var updateStyle = function(event) {
   // Weird ace bug?  getValue() returns old value, let's only use for user update
   var content = useThisValue === false ? styleEditor._editor.getValue() : useThisValue;
 
-  if (!useThisValue)
+  if (useThisValue === false)
     Session.set('styleDirty', content === lastContent.style ? false : content);
 
   post({ type: 'css', data: content });
@@ -312,7 +312,7 @@ var updateGuide = function(event) {
   // Weird ace bug?  getValue() returns old value, let's only use for user update
   var content = useThisValue === false ? guideEditor._editor.getValue() : useThisValue;
 
-  if (!useThisValue)
+  if (useThisValue === false)
     Session.set('guideDirty', content === lastContent.guide ? false : content);
 };
 

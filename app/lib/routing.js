@@ -132,13 +132,13 @@ PadController = RouteController.extend({
       if (content !== lastContent.code)
         updateEditor('code', lastContent.code = content);
 
-      content = Session.getNR('styleDirty') || page.style && page.style.css;
+      content = Session.getNR('styleDirty') || page.style && page.style.css || "";
       if (content !== lastContent.style)
-        updateEditor('style', lastContent.style = page.style.css);
+        updateEditor('style', lastContent.style = content);
 
-      content = Session.getNR('guideDirty') || page.guide;
-      if (page.guide !== lastContent.guide)
-        updateEditor('guide', lastContent.guide = page.guide);
+      content = Session.getNR('guideDirty') || page.guide || "";
+      if (content !== lastContent.guide)
+        updateEditor('guide', lastContent.guide = content);
 
       lastPage = page;
     }
