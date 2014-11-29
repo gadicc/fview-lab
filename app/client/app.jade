@@ -29,7 +29,7 @@ template(name='padLayout')
 
 template(name="result")
   +Modifier
-    +Surface(template="iframe")
+    +Surface template="iframe" id="iframe"
     if sandbox.jsError
       +Surface size="[20,20]" origin="[1,0]" align="[1,0]"
         div(class="jsError",title="Error: #{sandbox.jsError}") x

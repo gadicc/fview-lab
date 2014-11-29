@@ -126,15 +126,33 @@ receiveHandlers.javascript = function(code) {
   post({type:'setVar', name:'jsError', value:false});
 };
 
+globalKeys = [];
+Meteor.startup(function() {
+  globalKeys = Object.keys(window);
+});
+
 receiveHandlers.clear = function() {
-  readies.set('notFlushing', false);
+  // Once we set FLVbody to false, Blaze will cleanup
+  // It's important that we don't start a new render before
+  // this completes, hence the notFlushing var.
   readies.set('FVLbody', false);
-  // readies.set('code', false);
+  readies.set('notFlushing', false);
+
+  // Cleanup globals
+  var currentGlobals = Object.keys(window);
+  for (var i=0; i < currentGlobals.length; i++)
+    if (globalKeys.indexOf(currentGlobals[i]) === -1)
+      delete window[currentGlobals[i]];
+
+  // Cleanup Templates
   for (var name in templates) {
     delete Template[name];
     delete templates[name];
   }
+
+  // Cleanup CSS
   styleEl.textContent = '';
+
   Tracker.afterFlush(function() {
     readies.set('notFlushing', true);
   });
