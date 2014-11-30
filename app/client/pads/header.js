@@ -123,7 +123,7 @@ var dirtyContent = function() {
 
 var save = function() {
   var data = Router.current().data();
-  if (!userOwnsPad(Meteor.userId(), data.pad)) {
+  if (!userCanEditPad(Meteor.userId(), data.pad)) {
     alert("Can't save a pad you don't own!");
     return;
   }
