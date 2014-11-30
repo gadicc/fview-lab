@@ -70,8 +70,8 @@ PadController = RouteController.extend({
     if (!pad)
       return {};
 
-    subs.subscribe('userById', pad.owners[0]);
-    var author = Meteor.users.findOne(pad.owners[0]);
+    subs.subscribe('userById', pad.owner);
+    var author = Meteor.users.findOne(pad.owner);
     var pageNo = parseInt(this.params.pageNo) || 1;
 
     var title = pad.title;

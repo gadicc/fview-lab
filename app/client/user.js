@@ -14,7 +14,7 @@ UserController = RouteController.extend({
 
     return {
       user: user,
-      pads: Pads.find({owners: user._id})
+      pads: Pads.find({owner: user._id})
     }
   },
   yieldRegions: {
@@ -26,10 +26,4 @@ Router.route('/:username', {
   name: 'userHome',
   controller: 'UserController',
   template: 'userHome'
-});
-
-Template.userHeader.helpers({
-	x: function() {
-		console.log(this);
-	}
 });

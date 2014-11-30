@@ -7,7 +7,7 @@ Template.padHeader.helpers({
   userPads: function() {
     var userId = Meteor.userId();
     if (!userId) return;
-    var query = { owners: userId };
+    var query = { owner: userId };
     if (this.pad)
       query._id = { $not: this.pad._id };
     return Pads.find(query);
@@ -56,7 +56,7 @@ Template.padHeader.events({
       case 'new':
         var padId = Pads.insert({
           title: 'Unnamed Pad',
-          owners: [ Meteor.userId() ],
+          owner: Meteor.userId(),
           pages: 1
         });
         Pages.insert({

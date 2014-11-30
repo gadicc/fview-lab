@@ -5,12 +5,28 @@ PadStats = new Mongo.Collection('padStats');
 // Takes a padId, a pad, or a page
 userOwnsPad = function(userId, pad) {
 	if (typeof pad === 'object') {
-		if (pad.padId && !pad.owners)
+		if (pad.padId && !pad.owner)
 		  pad = Pads.findOne(pad.padId);
 	} else
 			pad = Pads.findOne(pad);
-	return !!pad && pad.owners.indexOf(userId) !== -1;
-}
+	return !!pad && pad.owner == userId;
+};
+userCanEditPad = function(userId, pad) {
+	if (typeof pad === 'object') {
+		if (pad.padId && !pad.owner)
+		  pad = Pads.findOne(pad.padId);
+	} else
+			pad = Pads.findOne(pad);
+	if (!pad)
+		return false;
+	var ok = pad.owner == userId || pad.editors.indexOf(userId) !== -1;
+	if (!ok) {
+		// only lookup team if we need to
+		var owner = Meteor.users.findOne(pad.owner);
+		ok = owner && owner.members.indexOf(userId) !== -1;
+	}
+	return ok;
+};
 
 var createdAt = function(userId, doc) {
 	doc.createdAt = new Date();
@@ -26,12 +42,12 @@ var updatedAt = function(userId, currentDoc, fieldNames, modifier) {
 
 Pads.allow({
 	insert: userOwnsPad,
-	update: userOwnsPad
+	update: userCanEditPad,
 });
 
 Pages.allow({
-	insert: userOwnsPad,
-	update: userOwnsPad
+	insert: userCanEditPad,
+	update: userCanEditPad
 });
 
 if (Meteor.isServer) {
@@ -80,7 +96,11 @@ if (Meteor.isServer) {
 if (Meteor.isServer) {
 	Meteor.publish('mypads', function(limit) {
 		check(limit, Number);
-		return Pads.find({owners: this.userId}, {limit:limit});
+		return Pads.find({owner: this.userId}, {limit:limit});
+	});
+
+	Meteor.publish('myTeams', function() {
+		return Meteor.users.find({members: this.userId});
 	});
 
 	Meteor.publish('pad', function(id) {
@@ -119,7 +139,7 @@ if (Meteor.isServer) {
 	});
 
 	Meteor.publish('userPads', function(userId) {
-		return Pads.find({owners:userId});
+		return Pads.find({owner:userId});
 	});
 
 	// Populate initial data
@@ -131,7 +151,7 @@ if (Meteor.isServer) {
 			_id: 'intro',
 			title: "Intro to FView Lab",
 			pages: 1,
-			owners: [ owner._id ]
+			owner: owner._id
 		});
 
 		Pages.insert({

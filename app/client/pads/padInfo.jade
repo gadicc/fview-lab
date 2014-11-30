@@ -7,6 +7,12 @@ template(name="padInfo")
   p Views: #{padStats.pages.p1.views}
   p Unique IPs: #{padStats.ipCount}
 
+  h2 Ownership
+  p Change owner to
+    each myTeams
+      button #{username}
+
+  h2 Stats
   table#siteCounts
     tr
       th(colspan="2") Referring sites

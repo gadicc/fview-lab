@@ -18,7 +18,7 @@ Meteor.methods({
 
 		delete(pad._id);
 		pad.forkedFrom = id;
-		pad.owners = [ this.userId ];
+		pad.owner = this.userId;
 		pad.title = 'Fork of ' + pad.title;
 		if (pad.updatedAt)
 			delete(pad.updatedAt);
@@ -159,7 +159,19 @@ WebApp.connectHandlers.use(function(req, res, next) {
 });
 
 // once off (can remove after next deploy)
-Pads.find().forEach(function(pad) {
-	if (!PadStats.findOne(pad._id))
-		PadStats.insert( {_id: pad._id, siteCounts: [] });
+Pads.find({owners:{$exists:true}}).forEach(function(pad) {
+  Pads.update(pad._id, {
+    $set: { owner: pad.owners[0], editors: pad.owners.slice(1) },
+    $unset: { owners: 1 }
+  });
 });
+
+if (!Meteor.users.findOne({username:'fview-team'})) {
+	var members = Meteor.users.find({username: { $in: ['dragon', 'PEM--', 'gadicc']}}).fetch();
+	Meteor.users.insert({
+		createdAt: new Date(),
+		username: 'fview-team',
+		isTeam: true,
+		members: _.pluck(members, '_id')
+	});
+}

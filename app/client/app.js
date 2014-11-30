@@ -136,3 +136,5 @@ insertNoDupes = function(array, value) {
 Template.padLayout.overlay = function() {
   return Session.get('overlay');
 };
+
+Meteor.subscribe('myTeams');

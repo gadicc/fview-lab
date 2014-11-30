@@ -1,5 +1,15 @@
+myTeams = [];
+Tracker.autorun(function() {
+	var userId = Meteor.userId();
+	myTeams = userId &&
+		_.pluck(Meteor.users.find({members: userId}).fetch(), '_id');
+});
+
 Template.registerHelper('isOwner', function() {
-  return this.pad && this.pad.owners.indexOf(Meteor.userId()) !== -1 ? 'isOwner' : false;
+	var userId = Meteor.userId();
+  return this.pad && (this.pad.owner == userId ||
+  	(this.pad.editors && this.pad.editors.indexOf(userId) !== -1) ||
+  	myTeams.indexOf(this.pad.owner) !== -1) ? 'isOwner' : false;
 });
 
 Template.guide.helpers({
@@ -8,8 +18,11 @@ Template.guide.helpers({
 			|| 'This page has no guide.';
 	},
 	multiplePagesOrOwner: function() {
-		return (this.pad && this.pad.pages > 1)
-		  || (this.pad && this.pad.owners.indexOf(Meteor.userId()) !== -1);
+		var userId = Meteor.userId();
+		return (this.pad && this.pad.pages > 1) ||
+			(this.pad && (this.pad.owner == userId ||
+			(this.pad.editors && this.pad.editors.indexOf(userId) !== -1) ||
+			myTeams.indexOf(this.pad.owner) !== -1));
 	},
   prevPage: function() {
     return this.page && this.page.pageNo > 1 && (this.page.pageNo-1);
