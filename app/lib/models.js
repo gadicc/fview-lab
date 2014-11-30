@@ -63,8 +63,8 @@ if (Meteor.isServer) {
 	Pages.before.update(function(userId, currentDoc, fieldNames, modifier) {
 		// relies on modifier.$set existing from updatedAt()
 		var query = 'url=https%3A%2F%2Ffview-lab.meteor.com%2Fpads%2F' +
-    	currentDoc.padId + '&viewport=1200x750&say_cheese=true&unique=' +
-    	Date.now();
+    	currentDoc.padId + '&viewport=1200x750' +
+    	'&fullpage=true&unique=' + Date.now();
     var token = md5(query + url2png.secret);
 		var url = 'https://api.url2png.com/v6/' +
 			url2png.api + '/' + token + '/png/?' + query;
@@ -79,8 +79,8 @@ if (Meteor.isServer) {
         'FView Lab, Realtime Famo.us+Meteor Playground';
 
       var query = 'url=https%3A%2F%2Ffview-lab.meteor.com%2Fembed%2F' +
-      	page.padId + '&viewport=600x400&say_cheese=true&unique=' + Date.now() +
-      	'&thumbnail_max_width=400';
+      	page.padId + '&viewport=600x400&thumbnail_max_width=400' +
+      	'&fullpage=true&unique=' + Date.now();
 	    var token = md5(query + url2png.secret);
 			var url = 'https://api.url2png.com/v6/' +
 				url2png.api + '/' + token + '/png/?' + query;
