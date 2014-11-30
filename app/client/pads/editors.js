@@ -87,6 +87,32 @@ receiveHandlers.resolvePossibleGlobals = function(data) {
   delete completeCBs[data.id];
 };
 
+var acePath = '/packages/dcsan_reactive-ace/vendor/ace/src/';
+var aceLangtoolsLoaded = null;
+$.getScript(acePath + 'ext-language_tools.js', function() {
+  ace.require("ace/ext/language_tools");
+  aceLangtoolsLoaded = true;
+  // editor loaded before lang tools script
+  if (codeEditor)
+    langToolsAndEditorLoaded(codeEditor._editor);
+});
+
+function langToolsAndEditorLoaded(editor) {
+  if (aceLangtoolsLoaded) {
+    editor.setOptions({
+      enableBasicAutocompletion: true,
+      enableSnippets: true,
+      enableLiveAutocompletion: false
+    });
+    editor.completers.push(codeCompleter);
+    editor.commands.on("afterExec", function(e){ 
+      if (e.command.name == "insertstring"&&/^[\w.]$/.test(e.args)) { 
+        codeComplete(); 
+      } 
+    });
+  }
+}
+
 codeEditor = null, tplEditor = null, styleEditor = null;
 var codeComplete = _.debounce(function() {
   codeEditor._editor.execCommand("startAutocomplete")
@@ -102,17 +128,7 @@ Template.editors.rendered = function() {
   codeEditor.syntaxMode = Session.get('codeLang');
   codeEditor.parseEnabled = true;
 
-  codeEditor._editor.setOptions({
-    enableBasicAutocompletion: true,
-    enableSnippets: true,
-    enableLiveAutocompletion: false
-  });
-  codeEditor._editor.completers.push(codeCompleter);
-  codeEditor._editor.commands.on("afterExec", function(e){ 
-    if (e.command.name == "insertstring"&&/^[\w.]$/.test(e.args)) { 
-      codeComplete(); 
-    } 
-  });
+  langToolsAndEditorLoaded(codeEditor._editor);
 
   styleEditor = new ReactiveAce();
   styleEditor.attach(this.find('#styleEditor'));

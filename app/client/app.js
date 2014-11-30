@@ -136,8 +136,3 @@ insertNoDupes = function(array, value) {
 Template.padLayout.overlay = function() {
   return Session.get('overlay');
 };
-
-var acePath = '/packages/dcsan_reactive-ace/vendor/ace/src/';
-$.getScript(acePath + 'ext-language_tools.js', function() {
-  ace.require("ace/ext/language_tools");
-});
