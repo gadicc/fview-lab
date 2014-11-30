@@ -90,9 +90,13 @@ function receiveMessage(event) {
     var div = document.createElement('div');
     div.id = 'url2png-cheese';
     document.body.appendChild(div);
-  } else
+  } else if (receiveHandlers[data.type])
+    receiveHandlers[data.type](data.data || data);
+  else
     console.log('Unknown ', data);
 }
+if (typeof receiveHandlers === 'undefined')
+  receiveHandlers = {};
 
 if (window.addEventListener)
   window.addEventListener('message', receiveMessage, false);

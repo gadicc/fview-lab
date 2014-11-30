@@ -58,6 +58,35 @@ Template.editGuideTpl.rendered = function() {
     updateEditor('guide', this.page.guide);
 }
 
+completeCBs = {};
+completeCBcount = 0;
+var codeCompleter = {
+  getCompletions: function(editor, session, pos, prefix, callback) {
+    var lineUntilCursor = session.getLine(pos.row).substr(0, pos.column);
+    var what = lineUntilCursor.match(/[^A-Za-z_\-\.]+(.*?)$/);
+    what = what ? what[1] : lineUntilCursor;
+    
+    var id = completeCBcount++;
+    completeCBs[id] = callback;
+    post({ type : 'resolvePossibleGlobals', data: { id:id,what:what } });
+  }
+};
+if (typeof receiveHandlers === 'undefined')
+  receiveHandlers = {};
+receiveHandlers.resolvePossibleGlobals = function(data) {
+  if (!completeCBs[data.id])
+    return;
+  completeCBs[data.id](null, data.results.sort().map(function(word, index) {
+    return {
+      caption: word,
+      value: word,
+      score: 1 - (index/100),
+      meta: "globals"
+    };
+  }));
+  delete completeCBs[data.id];
+};
+
 codeEditor = null, tplEditor = null, styleEditor = null;
 var codeComplete = _.debounce(function() {
   codeEditor._editor.execCommand("startAutocomplete")
@@ -78,6 +107,7 @@ Template.editors.rendered = function() {
     enableSnippets: true,
     enableLiveAutocompletion: false
   });
+  codeEditor._editor.completers.push(codeCompleter);
   codeEditor._editor.commands.on("afterExec", function(e){ 
     if (e.command.name == "insertstring"&&/^[\w.]$/.test(e.args)) { 
       codeComplete(); 

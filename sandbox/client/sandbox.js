@@ -105,6 +105,25 @@ receiveHandlers.affectedTemplates = function(data) {
       templates[data[i]].dep.changed();
 };
 
+receiveHandlers.resolvePossibleGlobals = function(data) {
+  what = data.what.split('.');
+  var base = window;
+  for (var i=0; i < what.length-1; i++)
+    base = base[what[i]];
+
+  if (typeof base !== 'object') {
+    post({type:'resolvePossibleGlobals', data: { id: data.id, results: [] }});
+    return;
+  }
+
+  var keys = Object.keys(base);
+  what = what[what.length-1];
+  if (what !== '')
+    keys = _.filter(keys, function(key) {
+      return key.substr(0, what.length) === what;
+    });
+  post({type:'resolvePossibleGlobals', data: { id: data.id, results: keys }});
+};
 
 var myOriginRE = new RegExp(myOrigin);
 window.onerror = function(message, url, line, col, error) {
