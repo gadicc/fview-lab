@@ -11,9 +11,15 @@ reactive-var
 reactive-dict
 meteorhacks:inject-initial
 
+# stuff
+pierreeric:cssc
+pierreeric:cssc-colors
+pierreeric:cssc-normalize
+
 # fview plugins
 mjn:fview-animate
 pierreeric:fview-animatedicon
+oorabona:fview-boxlayout
 pierreeric:fview-bksurfaceimage 
 pierreeric:fview-devices
 pierreeric:fview-dotloader
