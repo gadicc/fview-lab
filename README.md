@@ -3,6 +3,11 @@
 Copyright (c) 2014 by Gadi Cohen
 Released under the GPLv3, see LICENSE.txt
 
+FView Lab is a "reatime client-side playground".  It's super useful for rapid
+prototyping.  But it's only just half of the full Meteor full-stack
+framework.  For a similar project where you have access to code on the
+server too, see [MeteorPad](http://meteorpad.com/).
+
 ## Tips and Gotchas
 
 * **When you type**, we try figure out what you're doing to only update
@@ -18,7 +23,7 @@ Released under the GPLv3, see LICENSE.txt
 
 * **JS console**.  Chrome by default shows errors from everywhere
   (`Show all messages`) checkbox, and executes code in the `<top frame>`.
-  To inspect what's going on inside the framebox, change the dropdown to
+  To inspect what's going on inside the sandbox, change the dropdown to
   `<iframe>`.
 
 * **Sharing**.  Any time you save, we mark the webshot as dirty.  When your link is
