@@ -79,9 +79,12 @@ if (Meteor.isClient)
       return Tracker.nonreactive(function() { return Session.get(name); });
     }
 
+Router.configure({
+  trackPageView: true
+});
+
 PadController = RouteController.extend({
   layoutTemplate: 'padLayout',
-  trackPageView: true,
   waitOn: function () {
     lastPage = {};
     lastContent = {};
