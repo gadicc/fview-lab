@@ -203,7 +203,7 @@ Tracker.autorun(function() {
  * Called on every template editor update.
  * Go through each template and see what's changed, post to sandbox
  */
-templates = {};
+templates = {}; includingTemplates = {};
 var updateTemplates = function(event) {
   // Weird ace bug?  getValue() returns old value, let's only use for user update
   var value = useThisValue === false ? tplEditor._editor.getValue() : useThisValue;
@@ -257,6 +257,22 @@ var updateTemplates = function(event) {
     default:
       throw new Error("Don't know how to handle " + Session.get('tplLang'));
   }; /* switch(lang) */
+
+  // TODO, clean up removed templates.
+
+  //var re = /Spacebars.include\(view.lookupTemplate\("(.*?)"\)/g;
+  var re = /template: Spacebars.call\("(.*?)"\)/g;
+  for (var name in templates) {
+    var match, tpl = templates[name];
+    while(match = re.exec(tpl)) {
+      var include = match[1];
+      if (templates[include]) {
+        if (!includingTemplates[include])
+          includingTemplates[include] = [];
+        insertNoDupes(includingTemplates[include], name);
+      }
+    }
+  }
 };
 
 /*
@@ -335,8 +351,15 @@ var updateCode = function(event) {
               && item.expression.left.object
               && item.expression.left.object.object
               && item.expression.left.object.object.name === 'Template') {
-            insertNoDupes(affectedTemplates,
-              item.expression.left.object.property.name);
+
+            // mark for rerender, either the mentioned template, or it's
+            // parent if using rendered() since we want it to redraw on edit
+            var prop = item.expression.left.property.name;
+            var tplName = item.expression.left.object.property.name;
+            if (prop === 'rendered' && includingTemplates[tplName])
+              insertNoDupes(affectedTemplates, includingTemplates[tplName]);
+            else
+              insertNoDupes(affectedTemplates, tplName);
           } else {
             affectedTemplates = ['__fvlBody']; break;
           }
