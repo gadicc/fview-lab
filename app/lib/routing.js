@@ -46,13 +46,19 @@ var prepareContent = function(which, page) {
     page.lastPos = { templates: {} };
     page.lastEditor = 'tpl';
     if (currentLang === 'jade') {
-      content = 'body\n  +famousContext id="mainCtx"\n    ';
-      page.lastPos.templates.jade = [3,5];
+      content = 'body\n' +
+        '  +famousContext id="mainCtx"\n' +
+        '    +Surface\n' +
+        '      | ';
+      page.lastPos.templates.jade = [4,9];
     } else {
-      content = '<body>\n  {{#famousContext id="mainCtx"}}\n' +
-        '    \n' +
+      content = '<body>\n' +
+        '  {{#famousContext id="mainCtx"}}\n' +
+        '    {{#Surface}}\n' +
+        '      \n' +
+        '    {{/Surface}}\n' +
         '  {{/famousContext}}\n</body>';
-      page.lastPos.templates.spacebars = [3,5];
+      page.lastPos.templates.spacebars = [4,7];
     }
   }
 
