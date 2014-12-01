@@ -98,22 +98,22 @@ var dirtyContent = function() {
   var update = {};
   var content;
 
-  if (content = Session.get('tplDirty') !== false) {
+  if ((content = Session.get('tplDirty')) !== false) {
     update['templates.'+Session.get('tplLang')] = content;
     Session.set('tplDirty', false);
   }
 
-  if (content = Session.get('codeDirty') !== false) {
+  if ((content = Session.get('codeDirty')) !== false) {
     update['code.'+Session.get('codeLang')] = content;
     Session.set('codeDirty', false);
   }
 
-  if (content = Session.get('styleDirty') !== false) {
+  if ((content = Session.get('styleDirty')) !== false) {
     update['style.css'] = content;
     Session.set('styleDirty', false);
   }
 
-  if (content = Session.get('guideDirty') !== false) {
+  if ((content = Session.get('guideDirty')) !== false) {
     update.guide = content;
     Session.set('guideDirty', false);
   }
