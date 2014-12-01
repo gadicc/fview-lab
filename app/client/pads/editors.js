@@ -30,6 +30,9 @@ Template.editors.helpers({
   },
   isDirty: function(what) { return Session.get(what+'Dirty'); }
 });
+Template.editGuideTpl.helpers({
+  isDirty: function() { return Session.get('guideDirty'); }
+});
 
 guideEditor = null;
 Template.editGuideTpl.rendered = function() {

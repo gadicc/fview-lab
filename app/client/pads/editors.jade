@@ -42,6 +42,9 @@ template(name="editors")
       div
         a.selected CSS
       | Styling
+      if isDirty 'style'
+        span(class="unsaved",title="Unsaved Changes")
+          i.fa.fa-fw.fa-save
     div#styleEditor.editor
     div.footer
 
@@ -50,5 +53,8 @@ template(name="editGuideTpl")
     div
       a.selected Markdown
     | Guide
+    if isDirty
+      span(class="unsaved",title="Unsaved Changes")
+        i.fa.fa-fw.fa-save
   div#guideEditor.editor
   div.footer
