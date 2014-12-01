@@ -1,0 +1,3 @@
+#!/bin/bash
+
+meteor deploy fview-lab.meteor.com --settings config/settings.json

@@ -1,5 +1,6 @@
 UserController = RouteController.extend({
   layoutTemplate: 'layout',
+  trackPageView: true,
   waitOn: function() {
     return [
       subs.subscribe('userByName', this.params.username)

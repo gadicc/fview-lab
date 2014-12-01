@@ -82,6 +82,7 @@ if (Meteor.isClient)
 
 PadController = RouteController.extend({
   layoutTemplate: 'padLayout',
+  trackPageView: true,
   waitOn: function () {
     lastPage = {};
     lastContent = {};
@@ -190,6 +191,9 @@ Router.route('/', function() {
   this.redirect('padHome', {_id: 'intro' });
 });
 
+/* other routes */
+
 if (Meteor.isServer) {
+  // in user.js
   Router.route('/:username');
 }

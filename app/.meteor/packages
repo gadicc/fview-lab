@@ -6,6 +6,7 @@ meteor-platform
 reactive-var
 reactive-dict
 spacebars-compiler
+spiderable
 force-ssl
 
 # accounts
@@ -31,8 +32,8 @@ meteorhacks:subs-manager
 #meteorhacks:fast-render
 meteorhacks:inject-initial
 meteorhacks:ssr
-spiderable
 joshowens:shareit
+reywood:iron-router-ga
 
 # layout
 mizzao:bootstrap-3
