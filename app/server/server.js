@@ -56,15 +56,18 @@ Meteor.methods({
 		if (!page)
 			throw new Meteor.Error('404', "Can't delete non-existant page " + pageId);
 
-		Pages.remove(pageId);
 		var pad = Pads.findOne(page.padId);
+		if (!userCanEditPad(this.userId, pad))
+			throw new Meteor.Error('403', "Access denied");
+
+		Pages.remove(pageId);
 		if (pad.pages === 1) {
 			Pads.remove(pad._id);
 			return 'deleted';
 		}
 
-		Pads.update(page.padId, { $inc: { pages: -1 } });
-		Pages.update( { padId: page.padId, pageNo: { $gt: page.pageNo } },
+		Pads.update(pad._id, { $inc: { pages: -1 } });
+		Pages.update( { padId: pad._id, pageNo: { $gt: page.pageNo } },
 			{ $inc: { pageNo: -1 }});
 		// if orig pageNo was less than total pages, stay on current route (since
 		// the next page will inherit this pageNo.  Otherwise go to new pages count.

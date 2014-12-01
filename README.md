@@ -5,8 +5,10 @@ Released under the GPLv3, see LICENSE.txt
 
 FView Lab is a "reatime client-side playground".  It's super useful for rapid
 prototyping.  But it's only just half of the full Meteor full-stack
-framework.  For a similar project where you have access to code on the
-server too, see [MeteorPad](http://meteorpad.com/).
+framework.  For a similar project, where you have access to code on the
+server too, with custom packages, see [MeteorPad](http://meteorpad.com/).
+
+Designed for use with [famous-views.meteor.com](http://famous-views.meteor.com/).
 
 ## Tips and Gotchas
 
