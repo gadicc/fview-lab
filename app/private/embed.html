@@ -86,10 +86,13 @@
 				iframe = document.getElementById('iframe');
 		    iframe.onload = function() {
 		    	post({type:'clear'});
-		    	post({type:'javascript', data: javascript});
-		    	post({type:'css', data: css});
+		    	if (css)
+		    		post({type:'css', data: css});
 					for (var name in templates)
 						post({type:'template', name:name, compiled:templates[name]});
+		    	if (javascript)
+		    		post({type:'javascript', data: javascript});
+					post({type:'affectedTemplates', data:['__fvlBody']});
 		    };
 		    iframe.src = iframeSrc;
 			};
