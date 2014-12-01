@@ -19,11 +19,12 @@ userCanEditPad = function(userId, pad) {
 			pad = Pads.findOne(pad);
 	if (!pad)
 		return false;
-	var ok = pad.owner == userId || pad.editors.indexOf(userId) !== -1;
+	var ok = (pad.owner == userId) ||
+		(pad.editors && pad.editors.indexOf(userId) !== -1);
 	if (!ok) {
 		// only lookup team if we need to
 		var owner = Meteor.users.findOne(pad.owner);
-		ok = owner && owner.members.indexOf(userId) !== -1;
+		ok = owner && owner.members && owner.members.indexOf(userId) !== -1;
 	}
 	return ok;
 };
