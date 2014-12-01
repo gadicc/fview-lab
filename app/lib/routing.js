@@ -145,6 +145,15 @@ PadController = RouteController.extend({
     if (!data.pad)
       return;
 
+    // now that everything else is ready, load adjacent pages in background
+    // it's ok if it's a resubscribe from previous route.
+    if (data.page) {
+      if (data.page.pageNo > 1)
+        subs.subscribe('page', data.pad._id, data.page.pageNo-1);
+      if (data.page.pageNo < data.pad.pages)
+        subs.subscribe('page', data.pad._id, data.page.pageNo+1);
+    }
+      
     subs.subscribe('padStats', data.pad._id);
 
     var page = data.page, content;
