@@ -41,6 +41,21 @@ var prepareContent = function(which, page) {
   if (editor)
     editor.syntaxMode = aceAliases[currentLang] || currentLang;
 
+  // boiler plate code
+  if (which === 'tpl' && content === null) {
+    page.lastPos = { templates: {} };
+    page.lastEditor = 'tpl';
+    if (currentLang === 'jade') {
+      content = 'body\n  +famousContext id="mainCtx"\n    ';
+      page.lastPos.templates.jade = [3,5];
+    } else {
+      content = '<body>\n  {{#famousContext id="mainCtx"}}\n' +
+        '    \n' +
+        '  {{/famousContext}}\n</body>';
+      page.lastPos.templates.spacebars = [3,5];
+    }
+  }
+
   return content;
 }
 
@@ -126,7 +141,7 @@ PadController = RouteController.extend({
 
       content = Session.getNR('tplDirty') || prepareContent('tpl', page);
       if (content !== lastContent.tpl)
-        updateEditor('tpl', lastContent.tpl = content);
+        updateEditor('tpl', lastContent.tpl = content, page);
 
       content = Session.getNR('codeDirty') || prepareContent('code', page);
       if (content !== lastContent.code)

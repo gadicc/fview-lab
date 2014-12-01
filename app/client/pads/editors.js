@@ -52,13 +52,8 @@ Template.editGuideTpl.rendered = function() {
 
   guideEditor._editor.getSession().on('change', updateGuide);
 
-  var content;
-  if (content = Session.get('guideDirty'))
-    updateEditor('guide', content);
-  else if (editorQueue.guide)
+  if (editorQueue.guide)
     updateEditor('guide', editorQueue.guide);
-  else if (this.page)
-    updateEditor('guide', this.page.guide);
 }
 
 completeCBs = {};
@@ -167,13 +162,23 @@ Template.editors.rendered = function() {
  * queue the content.
  */
 var editorQueue = {}; var useThisValue = false;
-updateEditor = function(which, content) {
+updateEditor = function(which, content, page) {
   if (!content) content = '';
   var editor = window[which + 'Editor'];
   if (editor) {
     useThisValue = content;
     editor._editor.setValue(content, -1);
     useThisValue = false;
+
+    if (page) {
+      var which2 = which === 'tpl' ? 'templates' : which;
+      var pos = page.lastPos && page.lastPos[which2] &&
+        page.lastPos[which2][Session.getNR(which+'Lang')];
+      if (pos)
+        editor._editor.gotoLine.apply(editor._editor, pos);
+      if (page.lastEditor === which)
+        editor._editor.focus();
+    }
   } else
     editorQueue[which] = content;
 };
