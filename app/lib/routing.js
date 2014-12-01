@@ -8,24 +8,21 @@ if (Meteor.isClient)
 
 /*
  * Get the editor content for a page, using
- *   1) If forced, get code for current session lang (or boilerplate)
- *   1) Otherwise, current session lang, if it exists
+ *   1) The current session lang, if it exists
  *   2) Otherwise, autoconverted to current lang if possible
  *   3) Otherwise, switch Session lang to source lang
+ *      except if forceLang set, then use boilerplate
  */
 var aceAliases = { spacebars: 'handlebars' };
 forceLang = { tpl: false, code: false };
 var prepareContent = function(which, page) {
-  var content = null;
+  var content;
   var sessName = which+'Lang';
   var pageKey = which === 'tpl' ? 'templates' : 'code';
   var currentLang = Session.get(sessName);
   var allLangs = Object.keys(page[pageKey]);
 
-  if (forceLang[which]) {
-    content = page[pageKey][currentLang] || null;
-    forceLang[which] = false;
-  } else if (allLangs.length && !(content = page[pageKey][currentLang])) {
+  if (allLangs.length && !(content = page[pageKey][currentLang])) {
     for (var i=0; i < allLangs.length; i++) {
       var lang = allLangs[i];
       if (lang === currentLang)
@@ -36,7 +33,9 @@ var prepareContent = function(which, page) {
         break;
       }
     }
-    if (!content && !userOwnsPad(Meteor.userId(), page.padId)) {
+    if (forceLang[which])
+      forceLang[which] = false;
+    else if (!content) {
       Session.set(sessName, currentLang = allLangs[0]);
       content = page[pageKey][currentLang];
     }
@@ -46,8 +45,8 @@ var prepareContent = function(which, page) {
   if (editor)
     editor.syntaxMode = aceAliases[currentLang] || currentLang;
 
-  // boiler plate code
-  if (which === 'tpl' && content === null) {
+  // boiler plate code (if content === undefined; "" is intentionally blank)
+  if (which === 'tpl' && content === undefined) {
     page.lastPos = { templates: {} };
     page.lastEditor = 'tpl';
     if (currentLang === 'jade') {
@@ -67,7 +66,7 @@ var prepareContent = function(which, page) {
     }
   }
 
-  return content;
+  return content || "";
 }
 
 // globals, since in editor.js we check to see if edit is really dirty
