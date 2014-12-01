@@ -8,11 +8,13 @@ if (Meteor.isClient)
 
 /*
  * Get the editor content for a page, using
- *   1) Current Session lang, if available
+ *   1) If forced, get code for current session lang (or boilerplate)
+ *   1) Otherwise, current session lang, if it exists
  *   2) Otherwise, autoconverted to current lang if possible
  *   3) Otherwise, switch Session lang to source lang
  */
 var aceAliases = { spacebars: 'handlebars' };
+forceLang = { tpl: false, code: false };
 var prepareContent = function(which, page) {
   var content = null;
   var sessName = which+'Lang';
@@ -20,7 +22,10 @@ var prepareContent = function(which, page) {
   var currentLang = Session.get(sessName);
   var allLangs = Object.keys(page[pageKey]);
 
-  if (allLangs.length && !(content = page[pageKey][currentLang])) {
+  if (forceLang[which]) {
+    content = page[pageKey][currentLang] || null;
+    forceLang[which] = false;
+  } else if (allLangs.length && !(content = page[pageKey][currentLang])) {
     for (var i=0; i < allLangs.length; i++) {
       var lang = allLangs[i];
       if (lang === currentLang)

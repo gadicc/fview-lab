@@ -6,10 +6,12 @@ Session.setDefault('tplLang', 'spacebars');
 Template.editors.events({
   'click a': function(event, tpl) {
     event.preventDefault();
-    if (!navigateWithUnsavedWork())
-      return;
     var type = event.target.getAttribute('data-type');
+    if (Session.get(type+'Dirty') && !navigateWithUnsavedWork())
+      return;
+
     var newLang = event.target.getAttribute('data-value');
+    forceLang[type] = true;
     Session.set(type+'Lang', newLang);
     Session.set(type+'Dirty', false);
   }
