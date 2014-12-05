@@ -155,8 +155,14 @@ WebApp.connectHandlers.use(function(req, res, next) {
 	if (host && host.length > 1)
 		host = host[1].split(':', 1)[0].toLowerCase().replace(/^www/, '');
 
-	PadStats.update({ id: pad._id, siteCounts: {$elemMatch: { host: host }} },
-		{ $inc: { "siteCounts.$.count": 1 } });
+	var updateCount = PadStats.update(
+		{ _id: pad._id, siteCounts: {$elemMatch: { host: host }} },
+		{ $inc: { "siteCounts.$.count": 1 } }
+	);
+	if (updateCount === 0)
+		PadStats.update(pad._id, { $push: {
+			'siteCounts': { host: host, count: 1 }
+		}});
 
 	next();
 });
