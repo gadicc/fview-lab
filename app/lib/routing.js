@@ -86,12 +86,14 @@ Router.configure({
 PadController = RouteController.extend({
   layoutTemplate: 'padLayout',
   waitOn: function () {
-    lastPage = {};
-    lastContent = {};
+    var pageNo = this.params.pageNo ? parseInt(this.params.pageNo) : 1;
+    if (this.params._id !== lastPage.padId || pageNo !== lastPage.pageNo) {
+      lastPage = {};
+      lastContent = {};
+    }
     return [
       subs.subscribe('pad', this.params._id),
-      subs.subscribe('page', this.params._id,
-        this.params.pageNo ? parseInt(this.params.pageNo) : 1)
+      subs.subscribe('page', this.params._id, pageNo)
     ];
   },
   data: function() {
