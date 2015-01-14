@@ -283,6 +283,7 @@ var updateTemplates = function(event) {
  */
 //codes = {};
 codes = [];
+lastCodeContent = null;
 var updateCode = function(event) {
   // Weird ace bug?  getValue() returns old value, let's only use for user update
   var content = useThisValue === false ? codeEditor._editor.getValue() : useThisValue;
@@ -292,6 +293,10 @@ var updateCode = function(event) {
     Session.set('codeDirty', content === lastContent.code ? false : content);
 
   content = content.replace(/Template.body/g, 'Template.__fvlBody');
+
+  // Avoid superfluous updates on same code as last time
+  if (lastCodeContent === content)
+    return;
 
   switch(Session.get('codeLang')) {
 
@@ -387,7 +392,12 @@ var updateCode = function(event) {
   codes = newCodes; // all currently existing
 
   post({ type: 'javascript', data: content });
-  post({ type: 'affectedTemplates', data: affectedTemplates });
+
+  // i.e. don't send the fist time, only after a code change
+  if (lastCodeContent)
+    post({ type: 'affectedTemplates', data: affectedTemplates });
+
+  lastCodeContent = content;
 };
 
 var updateStyle = function(event) {
