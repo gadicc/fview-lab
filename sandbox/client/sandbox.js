@@ -57,6 +57,8 @@ receiveHandlers.template = function(data) {
           templatesQueue = [];
           templatesAutorun.stop();
           templatesAutorun = false;
+          if (lastCode)
+            receiveHandlers.javascript(lastCode);
         }
       });
     }
@@ -93,9 +95,10 @@ receiveHandlers.template = function(data) {
 
   /*
    * If we have an existing jsError, maybe it's because there were missing
-   * template components.  Try rerun the code in case it works now
+   * template components.  Try rerun the code in case it works now.  But
+   * not if we're in the middle of dequeueing.
    */
-  if (jsError)
+  if (jsError && templatesQueue.length === 0)
     receiveHandlers.javascript(lastCode);
 };
 
@@ -177,14 +180,10 @@ receiveHandlers.javascript = function(code) {
   lastCode = code;
 
   // don't run code before templates are ready (e.g. sent during flush)
-  /*
   if (!readies.get('FVLbody')) {
     jsError = true;
-    console.log('abort/queue');
     return;
   }
-  console.log('run');
-  */
 
   jsError = false;
   var script = document.createElement('script');
