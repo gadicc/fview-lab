@@ -30,7 +30,7 @@ function receiveMessage(event) {
   }
 
   var data = JSON.parse(event.data.substr(10));  // strip 'fview-lab '
-  // console.log(data);
+   console.log(data);
   if (typeof data === 'object' && data.type && receiveHandlers[data.type])
     receiveHandlers[data.type](data.data || data);
 }
@@ -176,6 +176,16 @@ receiveHandlers.javascript = function(code) {
   // in case we fail, we might try this again later
   lastCode = code;
 
+  // don't run code before templates are ready (e.g. sent during flush)
+  /*
+  if (!readies.get('FVLbody')) {
+    jsError = true;
+    console.log('abort/queue');
+    return;
+  }
+  console.log('run');
+  */
+
   jsError = false;
   var script = document.createElement('script');
   script.appendChild(document.createTextNode(code));
@@ -213,6 +223,12 @@ receiveHandlers.clear = function() {
 
   // Cleanup CSS
   styleEl.textContent = '';
+
+  // Cleanup queued code
+  /*
+  jsError = false;
+  lastCode = null;
+  */
 
   Tracker.afterFlush(function() {
     readies.set('notFlushing', true);

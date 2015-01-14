@@ -14,6 +14,7 @@ deps@1.0.6
 ejson@1.0.5
 fastclick@1.0.2
 follower-livedata@1.0.3
+fview-lab-sandbox-tests@1.0.0
 gadicohen:famous-views@0.1.30
 gadicohen:fview-kenburns@1.0.1
 gadicohen:fview-lagometer@1.0.2

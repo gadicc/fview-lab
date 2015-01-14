@@ -27,5 +27,8 @@ wenape:fview-infinitescrollview
 gadicohen:fview-kenburns
 gadicohen:fview-lagometer
 
+# test package
+fview-lab-sandbox-tests
+
 # Enable before deploy
 appcache
