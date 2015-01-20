@@ -79,17 +79,21 @@ receiveHandlers.template = function(data) {
     tpl.template = new Template(name, (function(tpl) { return function() {
       tpl.dep.depend();
       // console.log('Redrawing ' + tpl.name);
-      view = this;  // set global for this eval gen'd call, TODO, scope it
+      var view = this;
+      if (!tpl.compiled)
+        tpl.compiled = eval(tpl.source); // uses this scope, i.e. view above
+
       return tpl.compiled.apply(this, arguments);
     }; })(tpl));
     //Template.registerHelper(name, tpl.helper);
     Template[name] = tpl.template;
   }
 
-  // Debug brought you here?  Eval'd func actually run in tpl.template above.
-  tpl.compiled = eval(data.compiled);
-  //tpl.compiledFunc = eval('(function() { console.log(view); return ' + compiledText + '.apply(this,arguments); })');
-  // TODO tpl.wrappedFunc = function(view) { return eval(compiledText) }
+  // Originally we eval'd the template here, but it got the wrong scope (i.e. view
+  // identifier).  So now we do it at runtime, which makes more sense when
+  // debugging too.
+  tpl.source = data.compiled;
+  if (tpl.compiled) delete tpl.compiled;
 
   tpl.dep.changed();
 
@@ -261,9 +265,6 @@ Meteor.startup(function() {
 Template.registerHelper('dstache', function() {
   return '{{';
 });
-
-// Global, used in lookups.  TODO, better way
-view = null;
 
 /*
  * Can't just post this, since it won't get run again and show itself fixed
