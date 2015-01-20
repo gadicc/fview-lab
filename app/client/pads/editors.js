@@ -56,7 +56,12 @@ Template.editGuideTpl.rendered = function() {
 
   if (editorQueue.guide)
     updateEditor('guide', editorQueue.guide);
-}
+};
+Template.editGuideTpl.destroyed = function() {
+  // Destroy reference so updateEditor will correctly queue content
+  // if the editor is "hidden" by the user (i.e. destroyed)
+  guideEditor = null;
+};
 
 completeCBs = {};
 completeCBcount = 0;
