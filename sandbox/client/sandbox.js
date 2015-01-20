@@ -30,7 +30,7 @@ function receiveMessage(event) {
   }
 
   var data = JSON.parse(event.data.substr(10));  // strip 'fview-lab '
-   console.log(data);
+   // console.log(data);
   if (typeof data === 'object' && data.type && receiveHandlers[data.type])
     receiveHandlers[data.type](data.data || data);
 }
