@@ -54,16 +54,24 @@ Template.padHeader.events({
     var action = event.currentTarget.getAttribute('data-action');
     switch(action) {
       case 'new':
+        var name = 'Unnamed Pad';
+        var lastUnnamed = _.map(_.pluck(
+          Pads.find({ title: /^Unnamed Pad/ }, { fields: { title: 1 } }).fetch(),
+          'title'), function(name) { return parseInt(name.split(" ")[2]) || 1  })
+          .sort().pop();
+        if (lastUnnamed)
+          name += ' ' + (lastUnnamed+1);
+
         var padId = Pads.insert({
-          title: 'Unnamed Pad',
+          title: name,
           owner: Meteor.userId(),
           pages: 1
         });
         Pages.insert({
           padId: padId,
           pageNo: 1,
-          code: { javascript: '' },
-          templates: { spacebars: '' }
+          code: { },
+          templates: { }
         });
         Router.go('padHome', {_id: padId });
         break;
