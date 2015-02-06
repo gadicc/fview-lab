@@ -76,6 +76,10 @@ Template.result.helpers({
   }
 });
 
+Template.resultRefresh.famousEvents({
+  'click': Editors.refresh
+});
+
 function receiveMessage(event) {
   if (event.origin !== iframeSrc || event.data.substr(0,10) !== 'fview-lab ') {
     console.log('ignore', event);

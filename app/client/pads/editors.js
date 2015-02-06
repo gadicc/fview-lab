@@ -1,3 +1,6 @@
+// our new place for exports, use instead of globals
+Editors = {};
+
 Session.setDefault('codeLang', 'javascript');
 Session.setDefault('tplLang', 'spacebars');
 
@@ -437,4 +440,13 @@ navigateWithUnsavedWork = function() {
     return a;
   } else
     return true;
+};
+
+Editors.refresh = function() {
+  // force a "hard" refresh
+  iframe.loaded = false; iframe.src += '';
+
+  // if above line is commented out, this will still do a "soft" refresh
+  post({ type:'clear' }); codes=[]; templates={};
+  updateTemplates(); lastCodeContent=null; updateCode(); updateStyle();
 };

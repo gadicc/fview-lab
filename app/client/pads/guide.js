@@ -62,7 +62,7 @@ Template.guide.events({
 
 		switch(target) {
 			case 'createNext':
-				/* no break, continue to "next" */
+				// See also new pad code in header.js:Template.padHeader.events
 				Pages.insert({
 					padId: tpl.data.pad._id,
 					pageNo: tpl.data.page.pageNo+1,
@@ -70,6 +70,7 @@ Template.guide.events({
 					code: {}
 				});
 				Pads.update(tpl.data.pad._id, { $inc: { pages: 1 }} );
+				/* no break, continue to "next" */
 
 			case 'next':
 				Router.go('padPage', { _id: tpl.data.pad._id, pageNo: tpl.data.page.pageNo+1 });

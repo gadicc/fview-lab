@@ -62,6 +62,7 @@ Template.padHeader.events({
         if (lastUnnamed)
           name += ' ' + (lastUnnamed+1);
 
+        // see also newPage code in guide.js:Template.guide.events
         var padId = Pads.insert({
           title: name,
           owner: Meteor.userId(),

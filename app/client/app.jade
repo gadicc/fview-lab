@@ -30,9 +30,15 @@ template(name='padLayout')
 template(name="result")
   +Modifier
     +Surface template="iframe" id="iframe"
-    if sandbox.jsError
-      +Surface size="[20,20]" origin="[1,0]" align="[1,0]"
-        div(class="jsError",title="Error: #{sandbox.jsError}") x
+    +SequentialLayout direction="X" origin="[1,0]" align="[1,0]"
+      +famousIf sandbox.jsError
+        +Surface size="[20,20]"
+          i.fa.fa-times.jsError(title="Error: #{sandbox.jsError}")
+      +Surface size="[20,20]" template="resultRefresh"
+
+template(name="resultRefresh")
+  a(data-action="refresh")
+    i.fa.fa-refresh
 
 template(name="iframe")
   iframe#iframe(sandbox="allow-scripts allow-same-origin",scrolling="no")
