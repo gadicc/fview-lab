@@ -21,7 +21,8 @@ gadicohen:accounts-merge
 raix:famono
 #mjn:famous
 gadicohen:famous-views
-pierreeric:fview-flexgrid
+#pierreeric:fview-flexgrid
+gadicohen:fview-flex
 
 # atmosphere general
 iron:router

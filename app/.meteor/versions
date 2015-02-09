@@ -28,6 +28,7 @@ follower-livedata@1.0.3
 force-ssl@1.0.3
 gadicohen:accounts-merge@0.0.1
 gadicohen:famous-views@0.1.32
+gadicohen:fview-flex@0.0.2
 gadicohen:jade-client@0.2.9_1
 gadicohen:prism@1.0.3
 gadicohen:snippets@0.0.5
@@ -78,7 +79,6 @@ oauth2@1.1.2
 observe-sequence@1.0.4
 ordered-dict@1.0.2
 pierreeric:cssc@1.0.4
-pierreeric:fview-flexgrid@0.1.1
 raix:famono@0.9.27
 random@1.0.2
 reactive-dict@1.0.5

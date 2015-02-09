@@ -197,4 +197,14 @@ if (Meteor.isServer) {
 			} /* code */
 		}); /* insert */
 	} /* if pads.count == 0 */
+
+	var updatePadWithStats = function(id, fields) {
+		if (fields.pages && fields.pages.p1 && fields.pages.p1.views)
+			Pads.update(id, { $set: { views: fields.pages.p1.views }});
+	};
+
+	PadStats.find().observeChanges({
+		added: updatePadWithStats,
+		changed: updatePadWithStats
+	});
 } /* if server */

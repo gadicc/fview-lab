@@ -6,12 +6,12 @@ template(name='userHeader')
       span.title #{user.username}'s pads
 
 template(name='userHome')
-  +Surface class="userSurface" target="content"
-    p
-  +FlexGrid itemSize="[350,155]" marginTop=70 marinSide=20 gutterCol=20 gutterRow=20
-    each pads
-      +Surface class="padCard"
-        a(href="/pads/#{_id}")
-          h1 #{title}
-          img(src="#{webshot}")
-          p #{excerpt}
+  +ContainerSurface class="userSurface"
+    +FlexScrollView layout="CollectionLayout" layoutOptions='{ "itemSize": [350,155], "margins": [20,20,20,20], "spacing": [20,20] }'
+      each pads
+        +Surface class="padCard"
+          a(href="/pads/#{_id}")
+            h1 #{title}
+            img(src="#{webshot}")
+            p #{excerpt}
+            p #{views} views
