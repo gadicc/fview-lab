@@ -22,21 +22,24 @@ template(name="padHeader")
       +loginButtons align="right"
 
     div
+      a#cornerLogo(href="/")
       span.title
         if isOwner
           +titleEditable
         else
           span.title {{pad.title}}
         | #{pageHint}
-      | &nbsp;&nbsp;
+      | &nbsp;
       if isOwner
         i#padInfoIcon.fa.fa-info-circle.fa-lg(class=padInfoActive)
           div#whiteArrowUp
-        | &nbsp;&nbsp;
+        | &nbsp; &nbsp; &nbsp;
         if isDirty
           button.btn.btn-success(data-action="save") Save (Ctrl-S)
         else
           button.btn(disabled) ּSaved
+      else
+        | &nbsp; &nbsp; &nbsp;
       if currentUser
         button.btn.btn-primary(data-action="fork")
           | Fork

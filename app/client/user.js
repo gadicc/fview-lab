@@ -27,3 +27,9 @@ Router.route('/:username', {
   controller: 'UserController',
   template: 'userHome'
 });
+
+Template.userHome.helpers({
+  ctime: function() {
+    return moment(this.createdAt).format('YYYY-MM-DD');
+  }
+});

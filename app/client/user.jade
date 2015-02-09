@@ -3,6 +3,7 @@ template(name='userHeader')
     div#headerRight
       +loginButtons align="right"
     div
+      a#cornerLogo(href="/")
       span.title #{user.username}'s pads
 
 template(name='userHome')
@@ -14,4 +15,4 @@ template(name='userHome')
             h1 #{title}
             img(src="#{webshot}")
             p #{excerpt}
-            p #{views} views
+            p #{views} views since #{ctime}

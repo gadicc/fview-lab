@@ -1,12 +1,14 @@
 #header {
 	background: black;
-	padding: 0 20px 0 20px;
+	padding: 0 20px 0 10px;
 	color: white;
 }
 
+#header * { vertical-align: middle; }
+
 #header, #header>div {
-	height: 100%;
-	line-height: 50px;
+	height: 50px;
+	line-height: 48px;
 }
 
 #headerRight { float: right; }

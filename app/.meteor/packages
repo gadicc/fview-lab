@@ -45,6 +45,7 @@ chuangbo:marked
 matb33:collection-hooks
 gadicohen:snippets
 gadicohen:jade-client
+momentjs:moment
 
 # DONT Enable before deploy
 # currently 16.7 MB **MINIFIED**  d'oh
