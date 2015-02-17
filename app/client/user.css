@@ -30,3 +30,5 @@
   margin-right: 10px;
   float: left;
 }
+
+#userHomeSort span > *:not(.active) { opacity: 0.5; }

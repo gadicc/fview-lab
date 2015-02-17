@@ -7,12 +7,22 @@ template(name='userHeader')
       span.title #{user.username}'s pads
 
 template(name='userHome')
-  +ContainerSurface class="userSurface"
-    +FlexScrollView layout="CollectionLayout" layoutOptions='{ "itemSize": [350,155], "margins": [20,20,20,20], "spacing": [20,20] }'
-      each pads
-        +Surface class="padCard"
-          a(href="/pads/#{_id}")
-            h1 #{title}
-            img(src="#{webshot}")
-            p #{excerpt}
-            p #{views} views since #{ctime}
+  +HeaderFooterLayout headerSize=20
+    +Surface target="header" template="userHomeSort"
+    +ContainerSurface target="content" class="userSurface" overflow="hidden"
+      +FlexScrollView layout="CollectionLayout" layoutOptions=layoutOptions
+        +famousEach pads
+          +Surface class="padCard"
+            a(href="/pads/#{_id}")
+              h1 #{title}
+              img(src="#{webshot}")
+              p #{excerpt}
+              p #{views} views since #{ctime}
+
+template(name='userHomeSort')
+  p#userHomeSort
+    | &nbsp; Sort by
+    span
+      a(data-value="createdAt",class="{{sortByClass 'createdAt'}}") Date
+      | |
+      a(data-value="views",class="{{sortByClass 'views'}}") Views

@@ -168,10 +168,9 @@ WebApp.connectHandlers.use(function(req, res, next) {
 });
 
 // once off (can remove after next deploy)
-Pads.find({owners:{$exists:true}}).forEach(function(pad) {
+Pads.find({createdAt:{$exists:false}}).forEach(function(pad) {
   Pads.update(pad._id, {
-    $set: { owner: pad.owners[0], editors: pad.owners.slice(1) },
-    $unset: { owners: 1 }
+    $set: { createdAt: new Date(2014, Math.ceil(Math.random()*12), Math.ceil(Math.random()*28)) }
   });
 });
 
