@@ -16,9 +16,10 @@ fastclick@1.0.2
 follower-livedata@1.0.3
 fview-lab-sandbox-tests@1.0.0
 gadicohen:famous-views@0.1.32
-gadicohen:fview-flex@0.0.1
+gadicohen:fview-flex@0.0.4
 gadicohen:fview-kenburns@1.0.1
 gadicohen:fview-lagometer@1.0.2
+gadicohen:fview-sizeconstraint@1.0.0
 geojson-utils@1.0.2
 html-tools@1.0.3
 htmljs@1.0.3
@@ -51,6 +52,7 @@ pierreeric:fview-animatedicon@0.1.0
 pierreeric:fview-bksurfaceimage@0.1.2
 pierreeric:fview-devices@0.1.0
 pierreeric:fview-dotloader@0.1.1
+pierreeric:fview-flexgrid@0.1.1
 random@1.0.2
 reactive-dict@1.0.5
 reactive-var@1.0.4

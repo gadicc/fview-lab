@@ -23,10 +23,12 @@ oorabona:fview-boxlayout
 pierreeric:fview-bksurfaceimage 
 pierreeric:fview-devices
 pierreeric:fview-dotloader
+pierreeric:fview-flexgrid
 wenape:fview-infinitescrollview
 gadicohen:fview-kenburns
 gadicohen:fview-lagometer
 gadicohen:fview-flex
+gadicohen:fview-sizeconstraint
 
 # test package
 fview-lab-sandbox-tests
