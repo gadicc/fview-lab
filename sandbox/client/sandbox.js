@@ -1,10 +1,10 @@
 var isDevel = Injected.obj('env').NODE_ENV === 'development';
 var parentOrigin = isDevel
   ? 'http://localhost:6010'
-  : 'https://fview-lab.meteor.com';
+  : 'https://fview-lab2.meteor.com';
 var myOrigin = isDevel
   ? 'http://localhost:6020'
-  : 'https://fview-lab-sandbox.meteor.com';
+  : 'https://fview-lab-sandbox2.meteor.com';
 
 Template.body.helpers({
   reactiveBody: function() {

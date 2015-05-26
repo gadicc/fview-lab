@@ -4,12 +4,16 @@
 # but you can also edit it by hand.
 
 meteor-platform
-mjn:famous
-gadicohen:famous-views@0.1.28
 mquandalle:jade
 reactive-var
 reactive-dict
 meteorhacks:inject-initial
+
+# famous
+#mjn:famous
+#gadicohen:famous-views@0.1.28
+gadicohen:famous
+gadicohen:famous-views@1.0.0-pre.1
 
 # stuff
 pierreeric:cssc
@@ -17,18 +21,18 @@ pierreeric:cssc-colors
 pierreeric:cssc-normalize
 
 # fview plugins
-mjn:fview-animate
-pierreeric:fview-animatedicon
-oorabona:fview-boxlayout
-pierreeric:fview-bksurfaceimage 
-pierreeric:fview-devices
-pierreeric:fview-dotloader
-pierreeric:fview-flexgrid
-wenape:fview-infinitescrollview
-gadicohen:fview-kenburns
-gadicohen:fview-lagometer
-gadicohen:fview-flex
-gadicohen:fview-sizeconstraint
+#mjn:fview-animate
+#pierreeric:fview-animatedicon
+#oorabona:fview-boxlayout
+#pierreeric:fview-bksurfaceimage 
+#pierreeric:fview-devices
+#pierreeric:fview-dotloader
+#pierreeric:fview-flexgrid
+#wenape:fview-infinitescrollview
+#gadicohen:fview-kenburns
+#gadicohen:fview-lagometer
+#gadicohen:fview-flex
+#gadicohen:fview-sizeconstraint
 
 # test package
 fview-lab-sandbox-tests

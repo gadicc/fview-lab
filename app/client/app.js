@@ -30,7 +30,7 @@ FView.ready(function() {
 iframe = null, $iframe = null;
 var iframeSrc = isDevel
   ? 'http://localhost:6020'
-  : 'https://fview-lab-sandbox.meteor.com';
+  : 'https://fview-lab-sandbox2.meteor.com';
 
 var postQueue = [];
 post = function(data) {

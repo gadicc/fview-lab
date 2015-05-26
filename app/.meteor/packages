@@ -18,9 +18,9 @@ accounts-google
 gadicohen:accounts-merge
 
 # famo.us
-raix:famono
-#mjn:famous
-gadicohen:famous-views
+#raix:famono
+mjn:famous
+gadicohen:famous-views@0.2.2
 #pierreeric:fview-flexgrid
 gadicohen:fview-flex
 
