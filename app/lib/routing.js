@@ -51,17 +51,20 @@ var prepareContent = function(which, page) {
     page.lastEditor = 'tpl';
     if (currentLang === 'jade') {
       content = 'body\n' +
-        '  +famousContext id="mainCtx"\n' +
-        '    +Surface\n' +
-        '      | ';
+        '  +Scene\n' +
+        '    +Node\n' +
+        '      +DOMElement\n' +
+        '        | Hello, world!';
       page.lastPos.templates.jade = [4,9];
     } else {
       content = '<body>\n' +
-        '  {{#famousContext id="mainCtx"}}\n' +
-        '    {{#Surface}}\n' +
-        '      \n' +
-        '    {{/Surface}}\n' +
-        '  {{/famousContext}}\n</body>';
+        '  {{#Scene}}\n' +
+        '    {{#Node}}\n' +
+        '      {{#DOMElement}}\n' +
+        '        Hello, world!\n' +
+        '      {{/DOMElement}}\n' +
+        '    {{/Node}}\n' +
+        '  {{/Scene}}\n</body>';
       page.lastPos.templates.spacebars = [4,7];
     }
   }
