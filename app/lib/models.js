@@ -63,7 +63,7 @@ if (Meteor.isServer) {
 
 	Pages.before.update(function(userId, currentDoc, fieldNames, modifier) {
 		// relies on modifier.$set existing from updatedAt()
-		var query = 'url=https%3A%2F%2Ffview-lab.meteor.com%2Fpads%2F' +
+		var query = 'url=https%3A%2F%2Ffview-lab2.meteor.com%2Fpads%2F' +
     	currentDoc.padId + '&viewport=1200x750' +
     	'&fullpage=true&unique=' + Date.now();
     var token = md5(query + url2png.secret);
@@ -79,7 +79,7 @@ if (Meteor.isServer) {
       var excerpt = page.guide && match ? match[1] :
         'FView Lab, Realtime Famo.us+Meteor Playground';
 
-      var query = 'url=https%3A%2F%2Ffview-lab.meteor.com%2Fembed%2F' +
+      var query = 'url=https%3A%2F%2Ffview-lab2.meteor.com%2Fembed%2F' +
       	page.padId + '&viewport=600x400&thumbnail_max_width=400' +
       	'&fullpage=true&unique=' + Date.now();
 	    var token = md5(query + url2png.secret);
